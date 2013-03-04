@@ -9,26 +9,26 @@ package com.handmark.pulltorefresh.library;
 public final class R {
 	public static final class id {
 		public static final int pullFromStart = 0x7f050001;
-		public static final int pull_to_refresh_progress = 0x7f050012;
+		public static final int pull_to_refresh_progress = 0x7f050015;
 		public static final int rotate = 0x7f050007;
 		public static final int both = 0x7f050003;
 		public static final int webview = 0x7f05000a;
-		public static final int pull_to_refresh_text = 0x7f050013;
+		public static final int pull_to_refresh_text = 0x7f050016;
 		public static final int pullDownFromTop = 0x7f050005;
 		public static final int gridview = 0x7f050009;
 		public static final int pullUpFromBottom = 0x7f050006;
 		public static final int scrollview = 0x7f05000b;
 		public static final int pullFromEnd = 0x7f050002;
-		public static final int pull_to_refresh_image = 0x7f050011;
-		public static final int pull_to_refresh_sub_text = 0x7f050014;
-		public static final int fl_inner = 0x7f050010;
-		public static final int flip = 0x7f050008;
+		public static final int pull_to_refresh_image = 0x7f050014;
+		public static final int fl_inner = 0x7f050013;
+		public static final int pull_to_refresh_sub_text = 0x7f050017;
 		public static final int disabled = 0x7f050000;
+		public static final int flip = 0x7f050008;
 		public static final int manualOnly = 0x7f050004;
 	}
 	public static final class anim {
-		public static final int slide_out_to_top = 0x7f040003;
 		public static final int slide_out_to_bottom = 0x7f040002;
+		public static final int slide_out_to_top = 0x7f040003;
 		public static final int slide_in_from_bottom = 0x7f040000;
 		public static final int slide_in_from_top = 0x7f040001;
 	}
@@ -41,8 +41,8 @@ public final class R {
 		public static final int pull_to_refresh_from_bottom_release_label = 0x7f070004;
 	}
 	public static final class layout {
-		public static final int pull_to_refresh_header_vertical = 0x7f030003;
-		public static final int pull_to_refresh_header_horizontal = 0x7f030002;
+		public static final int pull_to_refresh_header_horizontal = 0x7f030003;
+		public static final int pull_to_refresh_header_vertical = 0x7f030004;
 	}
 	public static final class styleable {
 		public static final int PullToRefresh_ptrDrawableStart = 7;
@@ -67,10 +67,10 @@ public final class R {
 		public static final int PullToRefresh_ptrHeaderSubTextColor = 3;
 	}
 	public static final class drawable {
-		public static final int indicator_bg_top = 0x7f020005;
-		public static final int indicator_bg_bottom = 0x7f020004;
+		public static final int indicator_bg_top = 0x7f020006;
 		public static final int default_ptr_flip = 0x7f020000;
-		public static final int indicator_arrow = 0x7f020003;
+		public static final int indicator_arrow = 0x7f020004;
+		public static final int indicator_bg_bottom = 0x7f020005;
 		public static final int default_ptr_rotate = 0x7f020001;
 	}
 	public static final class attr {
