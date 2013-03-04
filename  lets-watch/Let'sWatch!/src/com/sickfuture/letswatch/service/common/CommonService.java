@@ -24,6 +24,8 @@ public abstract class CommonService extends Service implements
 
 	public static final String EXTRA_KEY_MESSAGE = "error message";
 
+	private static final String LOG_TAG = "CommonService";
+
 	@Override
 	public IBinder onBind(Intent arg0) {
 		return null;
@@ -44,7 +46,7 @@ public abstract class CommonService extends Service implements
 
 				public void run() {
 					for (JSONObject j : c) {
-						Log.d("service onSuccess", "JSON IS :" + j.toString());
+						Log.d(LOG_TAG, "JSON IS :" + j.toString());
 						ContentValues contentValues = new ContentValues();
 						contentValues.put(ContextHolder.getInstance()
 								.getContext().getString(R.string.data),
@@ -59,9 +61,9 @@ public abstract class CommonService extends Service implements
 
 	@Override
 	public void onError(Throwable e) {
-		Log.d("service onError", "ONERROR");
+		Log.d(LOG_TAG, "ONERROR");
 		Intent intent = new Intent(ACTION_ON_ERROR);
-		intent.putExtra(EXTRA_KEY_MESSAGE, e.getMessage());
+		intent.putExtra(EXTRA_KEY_MESSAGE, e.toString());
 		sendBroadcast(intent);
 	}
 
