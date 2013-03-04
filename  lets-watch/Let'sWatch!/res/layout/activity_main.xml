@@ -16,7 +16,8 @@
         android:fastScrollEnabled="false"
         android:footerDividersEnabled="false"
         android:headerDividersEnabled="false"
-        android:smoothScrollbar="true" />    -->
+        android:smoothScrollbar="true" />
+    -->
 
     <ProgressBar
         android:id="@+id/progressBar"
