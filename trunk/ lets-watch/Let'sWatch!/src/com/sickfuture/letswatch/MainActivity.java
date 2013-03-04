@@ -1,20 +1,21 @@
 package com.sickfuture.letswatch;
 
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
+import android.widget.ProgressBar;
 
 public class MainActivity extends Activity {
 
-	private PullToRefreshListView mListView;
+	ProgressBar mProgressBar;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		mListView = (PullToRefreshListView) findViewById(R.id.pull_refresh_list);
+		mProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+		mProgressBar.setVisibility(View.VISIBLE);
 	}
 
 	@Override
