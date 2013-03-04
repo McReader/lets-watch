@@ -18,8 +18,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.support.v4.util.LruCache;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,8 +26,11 @@ import android.widget.ImageView;
 
 import com.sickfuture.letswatch.ContextHolder;
 import com.sickfuture.letswatch.http.HttpManager;
+import com.sickfuture.letswatch.task.CustomExecutorAsyncTask;
 
 public class ImageLoader {
+
+	private static final String LOG_TAG = "ImageLoader";
 
 	private static ImageLoader instance;
 
@@ -66,7 +67,7 @@ public class ImageLoader {
 				super.entryRemoved(evicted, key, oldValue, newValue);
 				if (evicted) {
 					oldValue.recycle();
-					Log.d("ray", "recycle");
+					Log.d(LOG_TAG, "recycle");
 					System.gc();
 					oldValue = null;
 				}
@@ -146,8 +147,7 @@ public class ImageLoader {
 				}
 
 				public void onError(Exception e) {
-					imageView
-							.setImageResource(android.R.drawable.alert_dark_frame);
+					imageView.setImageResource(android.R.drawable.alert_dark_frame);
 				}
 
 				public String getUrl() {
@@ -163,7 +163,7 @@ public class ImageLoader {
 			return;
 		}
 		final Callback callback = mQueue.remove(0);
-		new ImageTask().start(callback);
+		new ImageTask().execute(Executors.newCachedThreadPool(), callback);
 	}
 
 	private void putBitmapToCache(Bitmap b, String url) {
@@ -175,7 +175,7 @@ public class ImageLoader {
 			fos.flush();
 			fos.close();
 		} catch (Exception e) {
-			Log.e("ray", "Error when saving image to cache. ", e);
+			Log.e(LOG_TAG, "Error when saving image to cache. ", e);
 		}
 	}
 
@@ -191,7 +191,7 @@ public class ImageLoader {
 				return BitmapFactory.decodeStream(fis);
 			}
 		} catch (FileNotFoundException e) {
-			Log.e("ray", "Error when saving image to cache. ", e);
+			Log.e(LOG_TAG, "Error when saving image to cache. ", e);
 			// ignored because not cached yet
 			return null;
 		} finally {
@@ -206,7 +206,7 @@ public class ImageLoader {
 		return null;
 	}
 
-	private class ImageTask extends AsyncTask<Callback, Void, Object> {
+	private class ImageTask extends CustomExecutorAsyncTask<Callback, Void, Object> {
 
 		private Callback mCallback;
 
@@ -255,12 +255,6 @@ public class ImageLoader {
 
 		}
 
-		public void start(Callback... params) {
-			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-				executeOnExecutor(Executors.newCachedThreadPool(), params);
-			} else {
-				execute(params);
-			}
-		}
+			
 	}
 }

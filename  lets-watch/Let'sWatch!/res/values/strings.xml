@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Let's highlight resourses from differrent classes by comment rows with annotations -->
+    
+    <!-- App -->
     <string name="app_name">Let\'s Watch!</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+    
+    <!-- Rename pls -->
     <string name="data">data</string>
     <string name="content_description">poster image</string>
+    
+    <!-- API -->
     <string name="API_BOX_OFFICE_REQUEST_URL">http://api.rottentomatoes.com/api/public/v1.0/lists/movies/box_office.json?limit=50&amp;country=us&amp;apikey=7j5zn3t5z3e63q227mx3b495</string>
+    
+    <!-- Rename pls -->
     <string name="internet_connection_is_not_avalible">Internet connection is not avalible</string>
+    
+    <!-- Adapter -->
+    <string name="view_holder">VIEW_HOLDER</string>
+    
 
 </resources>

@@ -357,11 +357,20 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int activity_main=0x7f0a0000;
     }
     public static final class string {
+        /**  API 
+         */
         public static final int API_BOX_OFFICE_REQUEST_URL=0x7f07000b;
+        /**  Let's highlight resourses from differrent classes by comment rows with annotations 
+ App 
+         */
         public static final int app_name=0x7f070006;
         public static final int content_description=0x7f07000a;
+        /**  Rename pls 
+         */
         public static final int data=0x7f070009;
         public static final int hello_world=0x7f070007;
+        /**  Rename pls 
+         */
         public static final int internet_connection_is_not_avalible=0x7f07000c;
         public static final int menu_settings=0x7f070008;
         /**  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
@@ -373,6 +382,9 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int pull_to_refresh_pull_label=0x7f070000;
         public static final int pull_to_refresh_refreshing_label=0x7f070002;
         public static final int pull_to_refresh_release_label=0x7f070001;
+        /**  Adapter 
+         */
+        public static final int view_holder=0x7f07000d;
     }
     public static final class style {
         /** 
