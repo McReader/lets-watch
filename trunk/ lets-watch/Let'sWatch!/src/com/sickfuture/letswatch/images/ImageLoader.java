@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import com.sickfuture.letswatch.ContextHolder;
 import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.task.CustomExecutorAsyncTask;
+import com.sickfuture.letswatch.task.ParamCallback;
 
 public class ImageLoader {
 
@@ -94,8 +95,7 @@ public class ImageLoader {
 
 	}
 
-	public void bind(final BaseAdapter adapter, final ImageView imageView,
-			final String url) {
+	public void bind(final BaseAdapter adapter, final ImageView imageView, final String url) {
 		imageView.setImageBitmap(null);
 		Bitmap bitm = null;
 		bitm = mStorage.get(url);
@@ -112,6 +112,35 @@ public class ImageLoader {
 				}
 
 				public void onError(Exception e) {
+				}
+
+				public String getUrl() {
+					return url;
+				}
+			});
+		}
+		proceed();
+	}
+	
+	public void bind(final ImageView imageView, final String url, final ParamCallback<Void> paramCallback) {
+		imageView.setImageBitmap(null);
+		Bitmap bitm = null;
+		bitm = mStorage.get(url);
+		if (bitm != null) {
+			imageView.setImageBitmap(bitm);
+			paramCallback.onSuccess(null);
+		} else {
+			if (mQueue.size() > 10) {
+				trimQueue();
+			}
+			mQueue.add(0, new Callback() {
+
+				public void onSuccess(Bitmap bm) {
+					paramCallback.onSuccess(null);
+				}
+
+				public void onError(Exception e) {
+					paramCallback.onError(e);
 				}
 
 				public String getUrl() {
