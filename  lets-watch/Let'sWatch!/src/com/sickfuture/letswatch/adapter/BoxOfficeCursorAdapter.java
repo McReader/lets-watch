@@ -15,11 +15,7 @@ import com.sickfuture.letswatch.images.ImageLoader;
 
 public class BoxOfficeCursorAdapter extends CursorAdapter {
 
-/*	private TextView mTitleTextView, mCriticsConsensusTextView;
-
-	private ImageView mPosterImageView;
-
-*/	public BoxOfficeCursorAdapter(Context context, Cursor c) {
+	public BoxOfficeCursorAdapter(Context context, Cursor c) {
 		super(context, c, true);
 	}
 
