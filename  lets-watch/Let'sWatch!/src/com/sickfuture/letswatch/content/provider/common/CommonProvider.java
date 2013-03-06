@@ -6,16 +6,17 @@ import org.json.JSONObject;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.net.Uri;
 
-import com.sickfuture.letswatch.R;
 import com.sickfuture.letswatch.database.DBHelperFactory;
 import com.sickfuture.letswatch.database.Values;
+import com.sickfuture.letswatch.service.common.CommonService;
 
 public abstract class CommonProvider extends ContentProvider implements Values {
 
 	@Override
-	public int delete(Uri arg0, String arg1, String[] arg2) {
+	public int delete(Uri uri, String string, String[] strings) {
 		return 0;
 	}
 
@@ -25,12 +26,38 @@ public abstract class CommonProvider extends ContentProvider implements Values {
 	}
 
 	@Override
+	public int bulkInsert(Uri uri, ContentValues[] values) {
+		JSONObject jsonObject;
+		long itemID;
+		int numInserted = 0;
+		try {
+			for (ContentValues contentValues : values) {
+				jsonObject = new JSONObject(
+						contentValues.getAsString(CommonService.DATA));
+				itemID = DBHelperFactory
+						.getInstance()
+						.getHelper(getContext(), getTableName(), getColoumns(),
+								this).addItem(jsonObject);
+				if (itemID <= 0) {
+					throw new SQLException("Failed to insert row into " + uri);
+				}
+				numInserted++;
+			}
+			getContext().getContentResolver().notifyChange(getContentURI(),
+					null);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return -1;
+		}
+		return numInserted;
+	}
+
+	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		JSONObject jsonObject;
 		long itemID;
 		try {
-			jsonObject = new JSONObject(values.getAsString(getContext()
-					.getString(R.string.data)));
+			jsonObject = new JSONObject(values.getAsString(CommonService.DATA));
 			itemID = DBHelperFactory
 					.getInstance()
 					.getHelper(getContext(), getTableName(), getColoumns(),
