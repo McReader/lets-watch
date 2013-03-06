@@ -53,7 +53,7 @@ public class BoxOfficeProvider extends CommonProvider {
 				object.getCriticConsensus());
 		values.put(Contract.BoxOfficeColumns.SYNOPSIS,
 				object.getString(SYNOPSIS));
-		values.put(Contract.BoxOfficeColumns.POSTERS, object.getPosters(""));
+		values.put(Contract.BoxOfficeColumns.POSTERS, object.getPosters(BoxOfficeObject.PROFILE));
 		return values;
 	}
 

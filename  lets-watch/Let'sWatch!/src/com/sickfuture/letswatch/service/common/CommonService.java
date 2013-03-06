@@ -62,6 +62,7 @@ public abstract class CommonService extends Service implements
 								PROVIDER_INSERT_ERROR_MESSAGE + " = '"
 										+ getProviderUri() + "'"));
 					}
+					
 				}
 			}).start();
 		}

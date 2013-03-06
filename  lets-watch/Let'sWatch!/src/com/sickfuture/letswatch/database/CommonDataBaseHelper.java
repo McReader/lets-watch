@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 
 abstract public class CommonDataBaseHelper extends CommonDataBase {
@@ -25,21 +26,40 @@ abstract public class CommonDataBaseHelper extends CommonDataBase {
 	}
 
 	public long addItem(JSONObject jsonObject) throws JSONException {
-		// TODO add open, close transactions
 		database = getWritableDatabase();
+		database.beginTransaction();
 		long value;
-		ContentValues values = getContentValues(jsonObject);
-		value = database.insertWithOnConflict(mTableName, null, values,
-				SQLiteDatabase.CONFLICT_REPLACE);
+		try {
+			ContentValues values = getContentValues(jsonObject);
+			value = database.insertWithOnConflict(mTableName, null, values,
+					SQLiteDatabase.CONFLICT_REPLACE);
+			if (value <= 0) {
+				throw new SQLException("Failed to insert row into "
+						+ mTableName);
+			}
+			database.setTransactionSuccessful();
+		} finally {
+			database.endTransaction();
+		}
 		return value;
 	}
 
 	public Cursor getItems(String orderBy, String selection,
 			String[] selectionArgs) {
-		// TODO add open, close transactions
 		database = getReadableDatabase();
-		Cursor cursor = database.query(mTableName, null, selection,
-				selectionArgs, null, null, orderBy);
+		database.beginTransaction();
+		Cursor cursor;
+		try {
+			cursor = null;
+			cursor = database.query(mTableName, null, selection, selectionArgs,
+					null, null, orderBy);
+			if (cursor == null) {
+				throw new SQLException("Failed to query row from " + mTableName);
+			}
+			database.setTransactionSuccessful();
+		} finally {
+			database.endTransaction();
+		}
 		return cursor;
 	}
 

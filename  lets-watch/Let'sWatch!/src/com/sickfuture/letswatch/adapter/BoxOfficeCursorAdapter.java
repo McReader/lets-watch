@@ -1,19 +1,24 @@
 package com.sickfuture.letswatch.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sickfuture.letswatch.FullScreenImageActivity;
 import com.sickfuture.letswatch.R;
 import com.sickfuture.letswatch.content.contract.Contract;
 import com.sickfuture.letswatch.images.ImageLoader;
 
 public class BoxOfficeCursorAdapter extends CursorAdapter {
+
+	public static final String IMAGE_VIEW_SOURCE = "IMAGE_VIEW_SOURCE";
 
 	public BoxOfficeCursorAdapter(Context context, Cursor c) {
 		super(context, c, true);
@@ -50,10 +55,23 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 	}
 
 	@Override
-	public void bindView(View view, Context context, Cursor cursor) {
+	public void bindView(View view, final Context context, final Cursor cursor) {
 		ViewHolder holder = (ViewHolder) view.getTag(R.string.view_holder);
+
 		if (!TextUtils.isEmpty(cursor.getString(cursor
 				.getColumnIndex(Contract.BoxOfficeColumns.POSTERS)))) {
+			final String posterUrl = cursor.getString(cursor
+					.getColumnIndex(Contract.BoxOfficeColumns.POSTERS));
+			holder.mPosterImageView.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					Intent intent = new Intent(context,
+							FullScreenImageActivity.class);
+					intent.putExtra(IMAGE_VIEW_SOURCE, posterUrl);
+					context.startActivity(intent);
+					return;
+				}
+			});
 			ImageLoader
 					.getInstance()
 					.bind(this,
@@ -61,6 +79,7 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 							cursor.getString(cursor
 									.getColumnIndex(Contract.BoxOfficeColumns.POSTERS)));
 		}
+
 		holder.mTitleTextView.setText(cursor.getString(cursor
 				.getColumnIndex(Contract.BoxOfficeColumns.MOVIE_TITLE)));
 		if (!TextUtils.isEmpty(cursor.getString(cursor
@@ -86,5 +105,4 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 
 		ImageView mPosterImageView;
 	}
-
 }
