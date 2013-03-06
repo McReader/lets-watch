@@ -11,17 +11,6 @@ public class BoxOfficeObject extends JSONModel {
 		super(jsonObject);
 	}
 
-	public String getPosters(String posterType) throws JSONException {
-		// TODO make types of posters
-		if (!jsonObj.getJSONObject("posters").isNull("profile")) {
-			return jsonObj.getJSONObject("posters").getString("profile");
-		}
-		if (!jsonObj.getJSONObject("posters").isNull("detailed")) {
-			return jsonObj.getJSONObject("posters").getString("detailed");
-		}
-		return null;
-	}
-
 	public String getCriticConsensus() throws JSONException {
 		if (jsonObj.isNull("critics_consensus")) {
 			return "";

@@ -6,6 +6,14 @@ import org.json.JSONObject;
 public class JSONModel {
 	protected JSONObject jsonObj;
 
+	public static final int THUMBNAIL = 0;
+
+	public static final int PROFILE = 1;
+
+	public static final int DETAILED = 2;
+
+	public static final int ORIGINAL = 3;
+
 	public JSONModel(JSONObject jsonObject) {
 		jsonObj = jsonObject;
 	}
@@ -32,5 +40,21 @@ public class JSONModel {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public String getPosters(int posterType) throws JSONException {
+		switch (posterType) {
+		case THUMBNAIL:
+			return jsonObj.getJSONObject("posters").getString("thumbnail");
+		case PROFILE:
+			return jsonObj.getJSONObject("posters").getString("profile");
+		case DETAILED:
+			return jsonObj.getJSONObject("posters").getString("detailed");
+		case ORIGINAL:
+			return jsonObj.getJSONObject("posters").getString("original");
+		default:
+			throw new IllegalArgumentException(
+					"Should use thumbnail, profile, detailed or original constants from base class");
+		}
 	}
 }
