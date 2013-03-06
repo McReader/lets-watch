@@ -1271,6 +1271,8 @@ containing a value of this type.
         public static final int both=0x7f050003;
         public static final int box_office_critics_consensus_text_view=0x7f050044;
         public static final int box_office_poster_image_view=0x7f050042;
+        public static final int box_office_progress_bar=0x7f050046;
+        public static final int box_office_pull_refresh_list=0x7f050045;
         public static final int box_office_title_text_view=0x7f050043;
         public static final int disableHome=0x7f050015;
         public static final int disabled=0x7f050000;
@@ -1281,7 +1283,6 @@ containing a value of this type.
         public static final int full_screen_image_view=0x7f05003f;
         public static final int gridview=0x7f050009;
         public static final int homeAsUp=0x7f050012;
-        public static final int image_progress_bar=0x7f050046;
         public static final int listMode=0x7f05000e;
         public static final int manualOnly=0x7f050004;
         public static final int menu_settings=0x7f05004c;
@@ -1296,7 +1297,6 @@ containing a value of this type.
         public static final int pull_to_refresh_sub_text=0x7f05004b;
         public static final int pull_to_refresh_text=0x7f05004a;
         public static final int rotate=0x7f050007;
-        public static final int screen_image_view=0x7f050045;
         public static final int scrollview=0x7f05000b;
         public static final int showCustom=0x7f050014;
         public static final int showHome=0x7f050011;

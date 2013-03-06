@@ -25,6 +25,7 @@ abstract public class CommonDataBaseHelper extends CommonDataBase {
 	}
 
 	public long addItem(JSONObject jsonObject) throws JSONException {
+		// TODO add open, close transactions
 		database = getWritableDatabase();
 		long value;
 		ContentValues values = getContentValues(jsonObject);
@@ -35,6 +36,7 @@ abstract public class CommonDataBaseHelper extends CommonDataBase {
 
 	public Cursor getItems(String orderBy, String selection,
 			String[] selectionArgs) {
+		// TODO add open, close transactions
 		database = getReadableDatabase();
 		Cursor cursor = database.query(mTableName, null, selection,
 				selectionArgs, null, null, orderBy);

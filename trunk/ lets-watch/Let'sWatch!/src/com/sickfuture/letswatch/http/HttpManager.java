@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
+import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -48,8 +49,6 @@ public class HttpManager {
 	private static final String UTF_8 = "UTF_8";
 
 	private HttpClient mClient;
-
-	// private final String API_URL = "https://api.vk.com/method/";
 
 	private static HttpManager instance;
 
@@ -110,10 +109,6 @@ public class HttpManager {
 	public String postRequest(String url, ArrayList<BasicNameValuePair> params)
 			throws ClientProtocolException, IOException, JSONException {
 		HttpPost post = new HttpPost(url);
-		/*
-		 * params.add(new BasicNameValuePair("access_token", VkTokenManager
-		 * .getTooken()));
-		 */
 		UrlEncodedFormEntity ent = new UrlEncodedFormEntity(params, HTTP.UTF_8);
 		post.setEntity(ent);
 		HttpResponse response = mClient.execute(post);
@@ -142,7 +137,7 @@ public class HttpManager {
 	}
 
 	private String loadAsString(HttpRequestBase request)
-			throws ClientProtocolException, IOException, JSONException {
+			throws ClientProtocolException, IOException {
 		HttpResponse response = mClient.execute(request);
 		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 			String entityValue = null;
@@ -163,7 +158,21 @@ public class HttpManager {
 			rd.close();
 			is.close();
 		}
+	}
 
+	private InputStream loadInputStream(HttpRequestBase request)
+			throws ParseException, IOException {
+		HttpResponse response = mClient.execute(request);
+		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+			String entityValue = null;
+			entityValue = EntityUtils.toString(response.getEntity());
+			throw new IOException(response.getStatusLine().getReasonPhrase()
+					+ " " + entityValue + " "
+					+ response.getStatusLine().getStatusCode());
+		}
+		final InputStream is = new URL(request.getURI().toString())
+				.openStream();
+		return is;
 	}
 
 	private static String readAll(final Reader rd) throws IOException {

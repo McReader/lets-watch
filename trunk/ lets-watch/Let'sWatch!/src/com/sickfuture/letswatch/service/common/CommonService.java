@@ -1,5 +1,6 @@
 package com.sickfuture.letswatch.service.common;
 
+import java.security.ProviderException;
 import java.util.List;
 
 import org.json.JSONObject;
@@ -11,12 +12,15 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.sickfuture.letswatch.ContextHolder;
-import com.sickfuture.letswatch.R;
 import com.sickfuture.letswatch.task.ParamCallback;
 
 public abstract class CommonService extends Service implements
 		ParamCallback<List<JSONObject>> {
+	
+
+	private static final String PROVIDER_INSERT_ERROR_MESSAGE = "Can't insert items into provider with uri";
+
+	public static String DATA="data";
 
 	public static String ACTION_ON_SUCCESS = "com.sickfuture.letswatch.service.common.ACTION_ON_SUCCESS";
 
@@ -45,15 +49,26 @@ public abstract class CommonService extends Service implements
 			new Thread(new Runnable() {
 
 				public void run() {
-					for (JSONObject j : c) {
+					
+					ContentValues[] contentValues = new ContentValues[c.size()];
+					int insertResult=0;
+					for (int i = 0; i < c.size(); i++) {
+						contentValues[i]=new ContentValues();
+						contentValues[i].put(DATA, c.get(i).toString());
+					}
+					insertResult=getContentResolver().bulkInsert(getProviderUri(), contentValues);
+					if(insertResult==-1){
+						onError(new ProviderException(PROVIDER_INSERT_ERROR_MESSAGE + " = '" + getProviderUri() + "'"));
+					}
+					/*for (JSONObject j : c) {
 						Log.d(LOG_TAG, "JSON IS :" + j.toString());
 						ContentValues contentValues = new ContentValues();
-						contentValues.put(ContextHolder.getInstance()
-								.getContext().getString(R.string.data),
+						contentValues.put(DATA,
 								j.toString());
 						getContentResolver().insert(getProviderUri(),
 								contentValues);
-					}
+						
+					}*/
 				}
 			}).start();
 		}

@@ -1,11 +1,10 @@
 package com.sickfuture.letswatch;
 
-import com.custom.TouchImageView;
-
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
+
+import com.custom.TouchImageView;
 
 public class FullScreenImageActivity extends Activity {
 
@@ -19,6 +18,7 @@ public class FullScreenImageActivity extends Activity {
 		setContentView(R.layout.activity_full_screen_image_view);
 		mpProgressBar = (ProgressBar) findViewById(R.id.full_screen_image_progress_bar);
 		mFullScreenImageView = (TouchImageView) findViewById(R.id.full_screen_image_view);
+		//TODO Get image source from intent
 	}
 
 }

@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class CommonDataBase extends SQLiteOpenHelper {
 
-	private static final String SELECT_DISTINCT_TBL_NAME_FROM_SQLITE_MASTER_WHERE_TBL_NAME = "select DISTINCT tbl_name from sqlite_master where tbl_name = '";
+	private static final String SELECT_DISTINCT_TBL = "select DISTINCT tbl_name from sqlite_master where tbl_name = '";
 
 	private static final String VARCHAR = "VARCHAR";
 
@@ -97,7 +97,7 @@ public class CommonDataBase extends SQLiteOpenHelper {
 
 	private boolean isTableExists(SQLiteDatabase database, String tableName) {
 		Cursor cursor = database.rawQuery(
-				SELECT_DISTINCT_TBL_NAME_FROM_SQLITE_MASTER_WHERE_TBL_NAME
+				SELECT_DISTINCT_TBL
 						+ tableName + "'", null);
 		if (cursor.getCount() > 0) {
 			cursor.close();

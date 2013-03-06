@@ -2,7 +2,6 @@ package com.sickfuture.letswatch;
 
 import java.util.Locale;
 
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -18,7 +17,7 @@ import com.sickfuture.letswatch.fragments.UpcomingFragment;
 public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener{
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
-
+	
 	ViewPager mViewPager;
 
 	@Override
@@ -96,7 +95,7 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 
 		@Override
 		public int getCount() {
-			// Show 3 total pages.
+			// Show 2 total pages.
 			return 2;
 		}
 
