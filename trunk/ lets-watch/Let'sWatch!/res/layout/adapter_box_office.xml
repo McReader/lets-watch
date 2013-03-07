@@ -6,10 +6,9 @@
 
     <ImageView
         android:id="@+id/box_office_poster_image_view"
-        android:layout_width="85dip"
-        android:layout_height="125dip"
-        android:layout_margin="5dip"
-        android:contentDescription="@string/content_description" />
+        style="@style/styleViewPosterOnMainScreen"
+        android:layout_width="88dip"
+        android:layout_height="128dip" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -18,18 +17,15 @@
 
         <TextView
             android:id="@+id/box_office_title_text_view"
+            style="@style/styleFilmTitleOnMainScreen"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dip"
-            android:layout_marginRight="5dip"
-            android:textColor="@color/FireBrick"
-            android:textSize="15sp" />
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/box_office_critics_consensus_text_view"
+            style="@style/styleTextDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="5dip"
             android:visibility="gone" />
     </LinearLayout>
 

@@ -12,14 +12,17 @@ public abstract class CommonTask<T> extends AsyncTask<String, Void, T> {
 		this.mParamCallback = paramCallback;
 	}
 
-	public abstract T convert(String s) throws Exception;
+	public abstract Object load(String url); 
+	
+	public abstract T convert(Object source) throws Exception;
 
 	private Exception e;
 
 	@Override
 	protected T doInBackground(String... params) {
 		try {
-			return convert(params[0]);
+			Object source = load(params[0]);
+			return convert(source);
 		} catch (Exception e) {
 			this.e = e;
 		}

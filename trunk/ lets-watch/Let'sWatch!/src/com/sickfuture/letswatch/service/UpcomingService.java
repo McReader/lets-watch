@@ -16,19 +16,21 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.sickfuture.letswatch.R;
+import com.sickfuture.letswatch.bo.common.JSONModel;
 import com.sickfuture.letswatch.content.contract.Contract;
 import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.service.common.CommonService;
 import com.sickfuture.letswatch.task.CommonTask;
 
-public class BoxOfficeService extends CommonService<List<JSONObject>> {
-
-	private static final String LOG_TAG = "BoxOfficeService";
+public class UpcomingService extends CommonService<List<JSONObject>> {
+	
+	private static final String LOG_TAG = "UpcomingService";
 	private List<JSONObject> mList;
 
 	@Override
 	protected void task(Intent intent) {
-		CommonTask<List<JSONObject>> commonTask = new CommonTask<List<JSONObject>>(this) {
+		Log.d(LOG_TAG, "start");
+		new CommonTask<List<JSONObject>>(this) {
 
 			@Override
 			public Object load(String url) {
@@ -40,14 +42,13 @@ public class BoxOfficeService extends CommonService<List<JSONObject>> {
 					callbackOnError(e);
 				} catch (IOException e) {
 					callbackOnError(e);
-				};
+				}
 				return null;
 			}
 
 			@Override
 			public List<JSONObject> convert(Object source) throws Exception {
 				if(source==null) return null;
-				
 				JSONArray jsonArray = ((JSONObject) source).getJSONArray("movies");
 				if (jsonArray.length() == 0) {
 					return null;
@@ -58,23 +59,21 @@ public class BoxOfficeService extends CommonService<List<JSONObject>> {
 				}
 				return mList;
 			}
-		};
-		commonTask.start(getString(R.string.API_BOX_OFFICE_REQUEST_URL));
+		}.start(getString(R.string.API_UPCOMING_REQUEST_URL));
 	}
 
 	@Override
 	protected Uri getProviderUri() {
-		return Contract.BoxOfficeColumns.CONTENT_URI;
+		return Contract.UpcomingColumns.CONTENT_URI;
 	}
 
-	@Override //runs in new thread
-	protected void callbackOnSuccess(final List<JSONObject> c) {
-		
-		ContentValues[] contentValues = new ContentValues[c.size()];
+	@Override
+	protected void callbackOnSuccess(List<JSONObject> t) {
+		ContentValues[] contentValues = new ContentValues[t.size()];
 		int insertResult = 0;
-		for (int i = 0; i < c.size(); i++) {
+		for (int i = 0; i < t.size(); i++) {
 			contentValues[i] = new ContentValues();
-			contentValues[i].put(DATA, c.get(i).toString());
+			contentValues[i].put(DATA, t.get(i).toString());
 		}
 		insertResult = getContentResolver().bulkInsert(
 				getProviderUri(), contentValues);

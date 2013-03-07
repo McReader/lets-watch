@@ -31,7 +31,14 @@
 
         <service android:name="com.sickfuture.letswatch.service.BoxOfficeService" >
         </service>
+        <service android:name="com.sickfuture.letswatch.service.UpcomingService" >
+        </service>
 
+        <provider
+            android:name="com.sickfuture.letswatch.content.provider.UpcomingProvider"
+            android:authorities="com.sickfuture.letswatch.content.provider.UpcomingProvider"
+            android:exported="false" >
+        </provider>
         <provider
             android:name="com.sickfuture.letswatch.content.provider.BoxOfficeProvider"
             android:authorities="com.sickfuture.letswatch.content.provider.BoxOfficeProvider"

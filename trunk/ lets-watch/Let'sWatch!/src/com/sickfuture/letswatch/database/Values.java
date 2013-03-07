@@ -6,6 +6,5 @@ import org.json.JSONObject;
 import android.content.ContentValues;
 
 public interface Values {
-	public abstract ContentValues getValues(JSONObject jsonObject)
-			throws JSONException;
+	public abstract ContentValues getValues(JSONObject jsonObject)	throws JSONException;
 }

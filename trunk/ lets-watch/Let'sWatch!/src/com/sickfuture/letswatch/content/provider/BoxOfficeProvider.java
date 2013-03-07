@@ -12,10 +12,6 @@ import com.sickfuture.letswatch.content.provider.common.CommonProvider;
 
 public class BoxOfficeProvider extends CommonProvider {
 
-	private static final String SYNOPSIS = "synopsis";
-	private static final String TITLE = "title";
-	private static final String ID = "id";
-
 	@Override
 	protected String getOrderBy() {
 		return null;
@@ -46,13 +42,10 @@ public class BoxOfficeProvider extends CommonProvider {
 			throws JSONException {
 		ContentValues values = new ContentValues();
 		BoxOfficeObject object = new BoxOfficeObject(jsonObject);
-		values.put(Contract.BoxOfficeColumns.MOVIE_ID, object.getString(ID));
-		values.put(Contract.BoxOfficeColumns.MOVIE_TITLE,
-				object.getString(TITLE));
-		values.put(Contract.BoxOfficeColumns.CRITICS_CONSENSUS,
-				object.getCriticConsensus());
-		values.put(Contract.BoxOfficeColumns.SYNOPSIS,
-				object.getString(SYNOPSIS));
+		values.put(Contract.BoxOfficeColumns.MOVIE_ID, object.getId());
+		values.put(Contract.BoxOfficeColumns.MOVIE_TITLE, object.getTitle());
+		values.put(Contract.BoxOfficeColumns.CRITICS_CONSENSUS,	object.getCriticConsensus());
+		values.put(Contract.BoxOfficeColumns.SYNOPSIS, object.getSynopsis());
 		values.put(Contract.BoxOfficeColumns.POSTERS, object.getPosters(BoxOfficeObject.PROFILE));
 		return values;
 	}
