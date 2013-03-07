@@ -26,8 +26,7 @@ import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.service.BoxOfficeService;
 import com.sickfuture.letswatch.service.common.CommonService;
 
-public class BoxOfficeFragment extends SherlockFragment implements
-		OnRefreshListener<ListView>, LoaderCallbacks<Cursor> {
+public class BoxOfficeFragment extends SherlockFragment implements	OnRefreshListener<ListView>, LoaderCallbacks<Cursor> {
 
 	private PullToRefreshListView mListView;
 
@@ -36,12 +35,10 @@ public class BoxOfficeFragment extends SherlockFragment implements
 	private BroadcastReceiver mBroadcastReceiver;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,	Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(R.layout.fragment_box_office, null);
-		mListView = (PullToRefreshListView) rootView
-				.findViewById(R.id.box_office_pull_refresh_list);
+		mListView = (PullToRefreshListView) rootView.findViewById(R.id.box_office_pull_refresh_list);
 		mBroadcastReceiver = new BroadcastReceiver() {
 
 			@Override
@@ -62,12 +59,10 @@ public class BoxOfficeFragment extends SherlockFragment implements
 		filter.addAction(CommonService.ACTION_ON_ERROR);
 		filter.addAction(CommonService.ACTION_ON_SUCCESS);
 		getActivity().registerReceiver(mBroadcastReceiver, filter);
-		mBoxOfficeCursorAdapter = new BoxOfficeCursorAdapter(
-				getSherlockActivity(), null);
+		mBoxOfficeCursorAdapter = new BoxOfficeCursorAdapter(getSherlockActivity(), null);
 		mListView.setAdapter(mBoxOfficeCursorAdapter);
 		mListView.setOnRefreshListener(this);
-		getSherlockActivity().getSupportLoaderManager().initLoader(0, null,
-				this);
+		getSherlockActivity().getSupportLoaderManager().initLoader(0, null, this);
 		return rootView;
 	}
 
@@ -85,9 +80,9 @@ public class BoxOfficeFragment extends SherlockFragment implements
 			getSherlockActivity().startService(intent);
 		} else {
 			mListView.onRefreshComplete();
-			Intent intent=new Intent(CommonService.ACTION_ON_ERROR);
+			/*Intent intent=new Intent(CommonService.ACTION_ON_ERROR);
 			intent.putExtra(CommonService.EXTRA_KEY_MESSAGE, getSherlockActivity().getString(R.string.internet_connection_is_not_avalible));
-			getSherlockActivity().sendBroadcast(intent);
+			getSherlockActivity().sendBroadcast(intent);*/
 			/*Toast.makeText(
 					getSherlockActivity(),
 					getSherlockActivity().getString(
@@ -99,8 +94,7 @@ public class BoxOfficeFragment extends SherlockFragment implements
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-		return new CursorLoader(getSherlockActivity(),
-				Contract.BoxOfficeColumns.CONTENT_URI, null, null, null, null);
+		return new CursorLoader(getSherlockActivity(), Contract.BoxOfficeColumns.CONTENT_URI, null, null, null, null);
 	}
 
 	@Override

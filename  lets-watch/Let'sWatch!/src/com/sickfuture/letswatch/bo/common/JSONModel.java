@@ -4,6 +4,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class JSONModel {
+	
+	private static final String POSTERS = "posters";
+	
+	protected static final String EMPTY = "";
+
+	protected static final String SYNOPSIS = "synopsis";
+	
+	protected static final String TITLE = "title";
+	
+	protected static final String ID = "id";
+
 	protected JSONObject jsonObj;
 
 	public static final int THUMBNAIL = 0;
@@ -30,28 +41,66 @@ public class JSONModel {
 		jsonObj = new JSONObject();
 	}
 
-	public String getString(String key) {
-		if (jsonObj.isNull(key)) {
-			return null;
+	protected String getString(String key) {
+		if (!jsonObj.isNull(key)) {
+			try {
+				return jsonObj.getString(key);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
+		return EMPTY;
+	}
+	
+	protected int getInt(String key){
+		if (!jsonObj.isNull(key)) {
+			try {
+				return jsonObj.getInt(key);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return -1;
+	}
+
+	protected String getStringFromObject(String object, String key){
+		String s = EMPTY;
 		try {
-			return jsonObj.getString(key);
+			JSONObject obj = jsonObj.getJSONObject(object);
+			if(!obj.isNull(key))
+				s = obj.getString(key);
+			obj = null;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		return null;
+		return s;
 	}
-
-	public String getPosters(int posterType) throws JSONException {
+	public String getPosters(int posterType) {
 		switch (posterType) {
 		case THUMBNAIL:
-			return jsonObj.getJSONObject("posters").getString("thumbnail");
+			try {
+				return jsonObj.getJSONObject(POSTERS).getString("thumbnail");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		case PROFILE:
-			return jsonObj.getJSONObject("posters").getString("profile");
+			try {
+				return jsonObj.getJSONObject(POSTERS).getString("profile");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		case DETAILED:
-			return jsonObj.getJSONObject("posters").getString("detailed");
+			try {
+				return jsonObj.getJSONObject(POSTERS).getString("detailed");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		case ORIGINAL:
-			return jsonObj.getJSONObject("posters").getString("original");
+			try {
+				return jsonObj.getJSONObject(POSTERS).getString("original");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		default:
 			throw new IllegalArgumentException(
 					"Should use thumbnail, profile, detailed or original constants from base class");

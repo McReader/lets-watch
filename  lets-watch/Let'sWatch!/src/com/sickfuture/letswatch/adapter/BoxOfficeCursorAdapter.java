@@ -57,27 +57,19 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 	@Override
 	public void bindView(View view, final Context context, final Cursor cursor) {
 		ViewHolder holder = (ViewHolder) view.getTag(R.string.view_holder);
-
-		if (!TextUtils.isEmpty(cursor.getString(cursor
-				.getColumnIndex(Contract.BoxOfficeColumns.POSTERS)))) {
-			final String posterUrl = cursor.getString(cursor
-					.getColumnIndex(Contract.BoxOfficeColumns.POSTERS));
+		final String posterUrl = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS));
+		if (!TextUtils.isEmpty(posterUrl)) {
 			holder.mPosterImageView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					Intent intent = new Intent(context,
-							FullScreenImageActivity.class);
+					Intent intent = new Intent(context, FullScreenImageActivity.class);
 					intent.putExtra(IMAGE_VIEW_SOURCE, posterUrl);
 					context.startActivity(intent);
 					return;
 				}
 			});
-			ImageLoader
-					.getInstance()
-					.bind(this,
-							holder.mPosterImageView,
-							cursor.getString(cursor
-									.getColumnIndex(Contract.BoxOfficeColumns.POSTERS)));
+			ImageLoader.getInstance().bind(this, holder.mPosterImageView,
+							cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS)));
 		}
 
 		holder.mTitleTextView.setText(cursor.getString(cursor
@@ -86,8 +78,7 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 				.getColumnIndex(Contract.BoxOfficeColumns.CRITICS_CONSENSUS)))) {
 			holder.mCriticsConsensusTextView.setVisibility(View.VISIBLE);
 			holder.mCriticsConsensusTextView
-					.setText(cursor.getString(cursor
-							.getColumnIndex(Contract.BoxOfficeColumns.CRITICS_CONSENSUS)));
+					.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.CRITICS_CONSENSUS)));
 		} else {
 			holder.mCriticsConsensusTextView.setVisibility(View.GONE);
 		}
@@ -101,6 +92,7 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 
 	// ViewHolder pattern implementation class
 	static class ViewHolder {
+		
 		TextView mTitleTextView, mCriticsConsensusTextView;
 
 		ImageView mPosterImageView;

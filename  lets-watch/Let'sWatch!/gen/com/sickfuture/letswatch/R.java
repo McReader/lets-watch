@@ -1271,13 +1271,13 @@ containing a value of this type.
         public static final int both=0x7f050003;
         public static final int box_office_critics_consensus_text_view=0x7f050044;
         public static final int box_office_poster_image_view=0x7f050042;
-        public static final int box_office_progress_bar=0x7f050046;
-        public static final int box_office_pull_refresh_list=0x7f050045;
+        public static final int box_office_progress_bar=0x7f05004c;
+        public static final int box_office_pull_refresh_list=0x7f05004b;
         public static final int box_office_title_text_view=0x7f050043;
         public static final int disableHome=0x7f050015;
         public static final int disabled=0x7f050000;
         public static final int edit_query=0x7f050033;
-        public static final int fl_inner=0x7f050047;
+        public static final int fl_inner=0x7f05004f;
         public static final int flip=0x7f050008;
         public static final int full_screen_image_progress_bar=0x7f050040;
         public static final int full_screen_image_view=0x7f05003f;
@@ -1285,23 +1285,31 @@ containing a value of this type.
         public static final int homeAsUp=0x7f050012;
         public static final int listMode=0x7f05000e;
         public static final int manualOnly=0x7f050004;
-        public static final int menu_settings=0x7f05004c;
+        public static final int menu_settings=0x7f050054;
         public static final int normal=0x7f05000d;
         public static final int pager=0x7f050041;
         public static final int pullDownFromTop=0x7f050005;
         public static final int pullFromEnd=0x7f050002;
         public static final int pullFromStart=0x7f050001;
         public static final int pullUpFromBottom=0x7f050006;
-        public static final int pull_to_refresh_image=0x7f050048;
-        public static final int pull_to_refresh_progress=0x7f050049;
-        public static final int pull_to_refresh_sub_text=0x7f05004b;
-        public static final int pull_to_refresh_text=0x7f05004a;
+        public static final int pull_to_refresh_image=0x7f050050;
+        public static final int pull_to_refresh_progress=0x7f050051;
+        public static final int pull_to_refresh_sub_text=0x7f050053;
+        public static final int pull_to_refresh_text=0x7f050052;
         public static final int rotate=0x7f050007;
         public static final int scrollview=0x7f05000b;
         public static final int showCustom=0x7f050014;
         public static final int showHome=0x7f050011;
         public static final int showTitle=0x7f050013;
         public static final int tabMode=0x7f05000f;
+        public static final int upcoming_cast_text_view=0x7f05004a;
+        public static final int upcoming_mpaa_text_view=0x7f050047;
+        public static final int upcoming_poster_image_view=0x7f050045;
+        public static final int upcoming_progress_bar=0x7f05004e;
+        public static final int upcoming_pull_refresh_list=0x7f05004d;
+        public static final int upcoming_release_date_text_view=0x7f050048;
+        public static final int upcoming_synopsis_text_view=0x7f050049;
+        public static final int upcoming_title_text_view=0x7f050046;
         public static final int useLogo=0x7f050010;
         public static final int webview=0x7f05000a;
         public static final int wrap_content=0x7f05000c;
@@ -1336,12 +1344,13 @@ containing a value of this type.
         public static final int activity_full_screen_image_view=0x7f030017;
         public static final int activity_main=0x7f030018;
         public static final int adapter_box_office=0x7f030019;
-        public static final int fragment_box_office=0x7f03001a;
-        public static final int fragment_upcoming=0x7f03001b;
-        public static final int pull_to_refresh_header_horizontal=0x7f03001c;
-        public static final int pull_to_refresh_header_vertical=0x7f03001d;
-        public static final int sherlock_spinner_dropdown_item=0x7f03001e;
-        public static final int sherlock_spinner_item=0x7f03001f;
+        public static final int adapter_upcoming=0x7f03001a;
+        public static final int fragment_box_office=0x7f03001b;
+        public static final int fragment_upcoming=0x7f03001c;
+        public static final int pull_to_refresh_header_horizontal=0x7f03001d;
+        public static final int pull_to_refresh_header_vertical=0x7f03001e;
+        public static final int sherlock_spinner_dropdown_item=0x7f03001f;
+        public static final int sherlock_spinner_item=0x7f030020;
     }
     public static final class menu {
         public static final int activity_main=0x7f0c0000;
@@ -1350,6 +1359,7 @@ containing a value of this type.
         /**  API 
          */
         public static final int API_BOX_OFFICE_REQUEST_URL=0x7f07001c;
+        public static final int API_UPCOMING_REQUEST_URL=0x7f07001d;
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
          */
         public static final int abs__action_bar_home_description=0x7f070006;
@@ -1406,7 +1416,7 @@ containing a value of this type.
         public static final int hello_world=0x7f070016;
         /**  Rename pls 
          */
-        public static final int internet_connection_is_not_avalible=0x7f07001d;
+        public static final int internet_connection_is_not_avalible=0x7f07001e;
         public static final int menu_settings=0x7f070017;
         /**  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
@@ -1423,7 +1433,7 @@ containing a value of this type.
         public static final int title_upcoming=0x7f07001a;
         /**  Adapter 
          */
-        public static final int view_holder=0x7f07001e;
+        public static final int view_holder=0x7f07001f;
     }
     public static final class style {
         /** 
@@ -1541,6 +1551,11 @@ containing a value of this type.
         public static final int Widget_Sherlock_SearchAutoCompleteTextView=0x7f0b0034;
         public static final int Widget_Sherlock_Spinner_DropDown_ActionBar=0x7f0b0024;
         public static final int Widget_Sherlock_TextView_SpinnerItem=0x7f0b0032;
+        public static final int styleFilmTitleOnMainScreen=0x7f0b005d;
+        public static final int styleMainListView=0x7f0b005b;
+        public static final int styleMppaOnMainScreen=0x7f0b005f;
+        public static final int styleTextDescription=0x7f0b005e;
+        public static final int styleViewPosterOnMainScreen=0x7f0b005c;
     }
     public static final class styleable {
         /** Attributes that can be used with a PullToRefresh.

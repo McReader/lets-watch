@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!--
         Base application theme, dependent on API level. This theme is replaced
@@ -17,4 +17,32 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="styleMainListView">
+        <item name="android:cacheColorHint">#00000000</item>
+        <item name="android:divider">#19000000</item>
+        <item name="android:dividerHeight">1dp</item>
+        <item name="android:fadingEdge">none</item>
+        <item name="android:fastScrollEnabled">false</item>
+        <item name="android:footerDividersEnabled">false</item>
+        <item name="android:headerDividersEnabled">false</item>
+        <item name="android:smoothScrollbar">true</item>
+    </style>
+    <style name="styleViewPosterOnMainScreen">
+        <item name="android:contentDescription">@string/content_description</item>
+        <item name="android:layout_margin">6dip</item>
+    </style>
+    <style name="styleFilmTitleOnMainScreen" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:layout_marginLeft">8dip</item>
+        <item name="android:layout_marginRight">8dip</item>
+        <item name="android:textColor">@color/FireBrick</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+    <style name="styleTextDescription" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:layout_margin">8dip</item>
+        <item name="android:maxLines">8</item>
+        <item name="android:singleLine">false</item>
+    </style>
+    <style name="styleMppaOnMainScreen" parent="android:Widget.Holo.Light.TextView">
+        <item name="android:textSize">12sp</item>
+    </style>
 </resources>

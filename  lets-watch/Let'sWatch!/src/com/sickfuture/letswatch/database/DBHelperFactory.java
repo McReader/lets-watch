@@ -17,8 +17,7 @@ public class DBHelperFactory {
 	private static DBHelperFactory instance;
 
 	private DBHelperFactory() {
-		helpers = Collections
-				.synchronizedMap(new HashMap<String, CommonDataBaseHelper>());
+		helpers = Collections.synchronizedMap(new HashMap<String, CommonDataBaseHelper>());
 	}
 
 	public static DBHelperFactory getInstance() {
@@ -43,13 +42,10 @@ public class DBHelperFactory {
 		return helpers.get(tableName);
 	}
 
-	private void createHelper(Context context, String tableName,
-			String[] coloumns, final Values contentValues) {
-		CommonDataBaseHelper helper = new CommonDataBaseHelper(context,
-				tableName, coloumns) {
+	private void createHelper(Context context, String tableName, String[] coloumns, final Values contentValues) {
+		CommonDataBaseHelper helper = new CommonDataBaseHelper(context,	tableName, coloumns) {
 			@Override
-			public ContentValues getContentValues(JSONObject jsonObject)
-					throws JSONException {
+			public ContentValues getContentValues(JSONObject jsonObject) throws JSONException {
 				return contentValues.getValues(jsonObject);
 			}
 		};

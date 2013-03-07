@@ -1,12 +1,10 @@
 package com.sickfuture.letswatch.service.common;
 
-import java.security.ProviderException;
 import java.util.List;
 
 import org.json.JSONObject;
 
 import android.app.Service;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
@@ -14,10 +12,10 @@ import android.util.Log;
 
 import com.sickfuture.letswatch.task.ParamCallback;
 
-public abstract class CommonService extends Service implements
-		ParamCallback<List<JSONObject>> {
+public abstract class CommonService<T> extends Service implements
+		ParamCallback<T> {
 
-	private static final String PROVIDER_INSERT_ERROR_MESSAGE = "Can't insert items into provider with uri";
+	protected static final String PROVIDER_INSERT_ERROR_MESSAGE = "Can't insert items into provider with uri";
 
 	public static String DATA = "data";
 
@@ -27,7 +25,7 @@ public abstract class CommonService extends Service implements
 
 	public static final String EXTRA_KEY_MESSAGE = "error message";
 
-	private static final String LOG_TAG = "CommonService";
+	public static final String LOG_TAG = "CommonService";
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -36,47 +34,36 @@ public abstract class CommonService extends Service implements
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		Log.d(LOG_TAG, "onStartCommand");
 		task(intent);
 		return START_NOT_STICKY;
 	}
 
 	@Override
-	public void onSuccess(final List<JSONObject> c) {
-		Intent intent = new Intent(ACTION_ON_SUCCESS);
-		sendBroadcast(intent);
-		if (c != null) {
-			new Thread(new Runnable() {
-
+	public void onSuccess(final T t) {
+		if(t!=null){
+			new Thread (new Runnable() {
+				
+				@Override
 				public void run() {
-
-					ContentValues[] contentValues = new ContentValues[c.size()];
-					int insertResult = 0;
-					for (int i = 0; i < c.size(); i++) {
-						contentValues[i] = new ContentValues();
-						contentValues[i].put(DATA, c.get(i).toString());
-					}
-					insertResult = getContentResolver().bulkInsert(
-							getProviderUri(), contentValues);
-					if (insertResult == -1) {
-						onError(new ProviderException(
-								PROVIDER_INSERT_ERROR_MESSAGE + " = '"
-										+ getProviderUri() + "'"));
-					}
-					
+					callbackOnSuccess(t);
 				}
+				
 			}).start();
 		}
 	}
 
 	@Override
 	public void onError(Throwable e) {
-		Log.d(LOG_TAG, "ONERROR");
-		Intent intent = new Intent(ACTION_ON_ERROR);
-		intent.putExtra(EXTRA_KEY_MESSAGE, e.toString());
-		sendBroadcast(intent);
+		callbackOnError(e);
 	}
 
 	protected abstract void task(Intent intent);
 
 	protected abstract Uri getProviderUri();
+
+	protected abstract void callbackOnSuccess(final T t);
+
+	protected abstract void callbackOnError(Throwable e);
+
 }

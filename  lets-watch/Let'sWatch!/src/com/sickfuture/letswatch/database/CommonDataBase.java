@@ -21,7 +21,7 @@ public class CommonDataBase extends SQLiteOpenHelper {
 
 	protected static final String DROP_TABLE = "DROP TABLE IF EXISTS ";
 
-	private final static int DB_VERSION = 1;
+	private final static int DB_VERSION = 2;
 
 	private CreateAndUpgrade createAndUpgrade;
 
