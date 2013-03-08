@@ -28,13 +28,12 @@ public abstract class CommonService<T> extends Service implements
 	public static final String LOG_TAG = "CommonService";
 
 	@Override
-	public IBinder onBind(Intent arg0) {
+	public IBinder onBind(Intent intent) {
 		return null;
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.d(LOG_TAG, "onStartCommand");
 		task(intent);
 		return START_NOT_STICKY;
 	}

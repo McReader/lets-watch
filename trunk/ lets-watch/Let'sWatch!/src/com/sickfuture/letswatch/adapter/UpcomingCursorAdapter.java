@@ -1,10 +1,5 @@
 package com.sickfuture.letswatch.adapter;
 
-import com.sickfuture.letswatch.R;
-import com.sickfuture.letswatch.adapter.BoxOfficeCursorAdapter.ViewHolder;
-import com.sickfuture.letswatch.content.contract.Contract;
-import com.sickfuture.letswatch.images.ImageLoader;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
@@ -13,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.sickfuture.letswatch.R;
+import com.sickfuture.letswatch.content.contract.Contract;
+import com.sickfuture.letswatch.images.ImageLoader;
 
 public class UpcomingCursorAdapter extends CursorAdapter {
 

@@ -1284,8 +1284,9 @@ containing a value of this type.
         public static final int gridview=0x7f050009;
         public static final int homeAsUp=0x7f050012;
         public static final int listMode=0x7f05000e;
+        public static final int loading_pr_bar=0x7f050054;
         public static final int manualOnly=0x7f050004;
-        public static final int menu_settings=0x7f050054;
+        public static final int menu_settings=0x7f050055;
         public static final int normal=0x7f05000d;
         public static final int pager=0x7f050041;
         public static final int pullDownFromTop=0x7f050005;
@@ -1303,13 +1304,13 @@ containing a value of this type.
         public static final int showTitle=0x7f050013;
         public static final int tabMode=0x7f05000f;
         public static final int upcoming_cast_text_view=0x7f05004a;
-        public static final int upcoming_mpaa_text_view=0x7f050047;
+        public static final int upcoming_mpaa_text_view=0x7f050046;
         public static final int upcoming_poster_image_view=0x7f050045;
         public static final int upcoming_progress_bar=0x7f05004e;
         public static final int upcoming_pull_refresh_list=0x7f05004d;
-        public static final int upcoming_release_date_text_view=0x7f050048;
+        public static final int upcoming_release_date_text_view=0x7f050047;
         public static final int upcoming_synopsis_text_view=0x7f050049;
-        public static final int upcoming_title_text_view=0x7f050046;
+        public static final int upcoming_title_text_view=0x7f050048;
         public static final int useLogo=0x7f050010;
         public static final int webview=0x7f05000a;
         public static final int wrap_content=0x7f05000c;
@@ -1351,6 +1352,7 @@ containing a value of this type.
         public static final int pull_to_refresh_header_vertical=0x7f03001e;
         public static final int sherlock_spinner_dropdown_item=0x7f03001f;
         public static final int sherlock_spinner_item=0x7f030020;
+        public static final int view_loading=0x7f030021;
     }
     public static final class menu {
         public static final int activity_main=0x7f0c0000;
@@ -1358,6 +1360,7 @@ containing a value of this type.
     public static final class string {
         /**  API 
          */
+        public static final int API_APPEND_KEY=0x7f07001b;
         public static final int API_BOX_OFFICE_REQUEST_URL=0x7f07001c;
         public static final int API_UPCOMING_REQUEST_URL=0x7f07001d;
         /**  Content description for the action bar "home" affordance. [CHAR LIMIT=NONE] 
@@ -1410,14 +1413,13 @@ containing a value of this type.
          */
         public static final int app_name=0x7f070015;
         public static final int content_description=0x7f070018;
-        /**  Rename pls 
-         */
-        public static final int data=0x7f07001b;
+        public static final int data=0x7f070020;
         public static final int hello_world=0x7f070016;
-        /**  Rename pls 
+        /**  App constants and keys 
          */
         public static final int internet_connection_is_not_avalible=0x7f07001e;
         public static final int menu_settings=0x7f070017;
+        public static final int pagination=0x7f07001f;
         /**  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
  Just use standard Pull Down String when pulling up. These can be set for languages which require it 
          */
@@ -1433,7 +1435,7 @@ containing a value of this type.
         public static final int title_upcoming=0x7f07001a;
         /**  Adapter 
          */
-        public static final int view_holder=0x7f07001f;
+        public static final int view_holder=0x7f070021;
     }
     public static final class style {
         /** 

@@ -30,6 +30,7 @@
     <style name="styleViewPosterOnMainScreen">
         <item name="android:contentDescription">@string/content_description</item>
         <item name="android:layout_margin">6dip</item>
+        <item name="android:background">@android:color/darker_gray</item>
     </style>
     <style name="styleFilmTitleOnMainScreen" parent="android:Widget.Holo.Light.TextView">
         <item name="android:layout_marginLeft">8dip</item>

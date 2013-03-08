@@ -63,7 +63,7 @@ public class JSONModel {
 		return -1;
 	}
 
-	protected String getStringFromObject(String object, String key){
+	public String getStringFromObject(String object, String key){
 		String s = EMPTY;
 		try {
 			JSONObject obj = jsonObj.getJSONObject(object);

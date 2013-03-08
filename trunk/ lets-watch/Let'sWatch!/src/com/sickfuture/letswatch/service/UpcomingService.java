@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.security.ProviderException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
@@ -11,8 +12,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.sickfuture.letswatch.R;
@@ -24,12 +29,19 @@ import com.sickfuture.letswatch.task.CommonTask;
 
 public class UpcomingService extends CommonService<List<JSONObject>> {
 	
+	public static final String NEXT_UPCOMING = "next_upcoming";
+	
 	private static final String LOG_TAG = "UpcomingService";
+	
+	private static int PAGINATION = R.string.pagination;
+	
 	private List<JSONObject> mList;
+	
+	private String URL;
 
 	@Override
 	protected void task(Intent intent) {
-		Log.d(LOG_TAG, "start");
+		URL = intent.getStringExtra("url");
 		new CommonTask<List<JSONObject>>(this) {
 
 			@Override
@@ -49,7 +61,8 @@ public class UpcomingService extends CommonService<List<JSONObject>> {
 			@Override
 			public List<JSONObject> convert(Object source) throws Exception {
 				if(source==null) return null;
-				JSONArray jsonArray = ((JSONObject) source).getJSONArray("movies");
+				JSONObject sourceObject = (JSONObject) source;
+				JSONArray jsonArray = sourceObject.getJSONArray("movies");
 				if (jsonArray.length() == 0) {
 					return null;
 				}
@@ -57,9 +70,19 @@ public class UpcomingService extends CommonService<List<JSONObject>> {
 				for (int i = 0; i < jsonArray.length(); i++) {
 					mList.add(jsonArray.getJSONObject(i));
 				}
+				JSONModel json = new JSONModel(sourceObject);
+				String nextPage = json.getStringFromObject("links", "next");
+				if(!TextUtils.isEmpty(nextPage)){
+					nextPage = nextPage + getString(R.string.API_APPEND_KEY);
+				}
+				Log.d(LOG_TAG, "next = " + nextPage);
+				SharedPreferences prefs = getSharedPreferences(getString(PAGINATION), Context.MODE_PRIVATE);
+				Editor editor = prefs.edit();
+				editor.putString(NEXT_UPCOMING, nextPage);
+				editor.commit();
 				return mList;
 			}
-		}.start(getString(R.string.API_UPCOMING_REQUEST_URL));
+		}.start(URL);
 	}
 
 	@Override
