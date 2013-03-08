@@ -13,18 +13,19 @@
     <string name="title_box_office">box office</string>
     <string name="title_upcoming">upcoming</string>
     
-    <!-- Rename pls -->
-    <string name="data">data</string>
-    
     <!-- API -->
+    <string name="API_APPEND_KEY">&amp;apikey=7j5zn3t5z3e63q227mx3b495</string>
     <string name="API_BOX_OFFICE_REQUEST_URL">http://api.rottentomatoes.com/api/public/v1.0/lists/movies/box_office.json?limit=50&amp;country=us&amp;apikey=7j5zn3t5z3e63q227mx3b495</string>
-    <string name="API_UPCOMING_REQUEST_URL">http://api.rottentomatoes.com/api/public/v1.0/lists/movies/upcoming.json?apikey=7j5zn3t5z3e63q227mx3b495</string>
+    <string name="API_UPCOMING_REQUEST_URL">http://api.rottentomatoes.com/api/public/v1.0/lists/movies/upcoming.json?page_limit=10&amp;apikey=7j5zn3t5z3e63q227mx3b495</string>
     
-    <!-- Rename pls -->
+    <!-- App constants and keys -->
     <string name="internet_connection_is_not_avalible">Internet connection is not avalible</string>
+    <string name="pagination">pagination</string>
+    <string name="data">data</string>
     
     <!-- Adapter -->
     <string name="view_holder">VIEW_HOLDER</string>
+    
     
 
 </resources>

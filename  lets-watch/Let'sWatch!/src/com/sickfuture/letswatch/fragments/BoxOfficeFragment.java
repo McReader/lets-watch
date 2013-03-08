@@ -25,6 +25,7 @@ import com.sickfuture.letswatch.content.contract.Contract;
 import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.service.BoxOfficeService;
 import com.sickfuture.letswatch.service.common.CommonService;
+import com.sickfuture.letswatch.utils.InetChecker;
 
 public class BoxOfficeFragment extends SherlockFragment implements	OnRefreshListener<ListView>, LoaderCallbacks<Cursor> {
 
@@ -74,20 +75,12 @@ public class BoxOfficeFragment extends SherlockFragment implements	OnRefreshList
 
 	@Override
 	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
-		if (HttpManager.getInstance().isAvalibleInetConnection()) {
-			Intent intent = new Intent(getSherlockActivity(),
-					BoxOfficeService.class);
+		if (InetChecker.checkInetConnection(getSherlockActivity())) {
+			Intent intent = new Intent(getSherlockActivity(), BoxOfficeService.class);
+			intent.putExtra("url", getString(R.string.API_BOX_OFFICE_REQUEST_URL));
 			getSherlockActivity().startService(intent);
 		} else {
 			mListView.onRefreshComplete();
-			/*Intent intent=new Intent(CommonService.ACTION_ON_ERROR);
-			intent.putExtra(CommonService.EXTRA_KEY_MESSAGE, getSherlockActivity().getString(R.string.internet_connection_is_not_avalible));
-			getSherlockActivity().sendBroadcast(intent);*/
-			/*Toast.makeText(
-					getSherlockActivity(),
-					getSherlockActivity().getString(
-							R.string.internet_connection_is_not_avalible),
-					Toast.LENGTH_LONG).show();*/
 		}
 
 	}
@@ -106,7 +99,7 @@ public class BoxOfficeFragment extends SherlockFragment implements	OnRefreshList
 	}
 
 	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
+	public void onLoaderReset(Loader<Cursor> loader) {
 		mBoxOfficeCursorAdapter.swapCursor(null);
 	}
 

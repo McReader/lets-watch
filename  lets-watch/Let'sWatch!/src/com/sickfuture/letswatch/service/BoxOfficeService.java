@@ -25,10 +25,12 @@ public class BoxOfficeService extends CommonService<List<JSONObject>> {
 
 	private static final String LOG_TAG = "BoxOfficeService";
 	private List<JSONObject> mList;
+	private String URL;
 
 	@Override
 	protected void task(Intent intent) {
-		CommonTask<List<JSONObject>> commonTask = new CommonTask<List<JSONObject>>(this) {
+		URL = intent.getStringExtra("url");
+		new CommonTask<List<JSONObject>>(this) {
 
 			@Override
 			public Object load(String url) {
@@ -58,8 +60,7 @@ public class BoxOfficeService extends CommonService<List<JSONObject>> {
 				}
 				return mList;
 			}
-		};
-		commonTask.start(getString(R.string.API_BOX_OFFICE_REQUEST_URL));
+		}.start(URL);
 	}
 
 	@Override
