@@ -1,10 +1,6 @@
 package com.sickfuture.letswatch.bo;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
-
-import android.util.Log;
 
 import com.sickfuture.letswatch.bo.common.JSONModel;
 
@@ -12,116 +8,124 @@ public class UpcomingObject extends JSONModel {
 	
 	private static final String LOG_TAG = "UpcomingObject";
 	
-	private static final String ALTERNATE = "alternate";
-	private static final String CAST = "cast";
-	private static final String CLIPS = "clips";
-	private static final String REVIEWS = "reviews";
-	private static final String SIMILAR = "similar";
-	private static final String SELF = "self";
-	private static final String LINKS = "links";
-	private static final String IMDB = "imdb";
-	private static final String ALTERNATE_IDS = "alternate_ids";
-	private static final String NAME_DIVIDER = ", ";
-	private static final String NAME = "name";
-	private static final String ABRIDGED_CAST = "abridged_cast";
-	private static final String AUDIENCE_SCORE = "audience_score";
-	private static final String CRITICS_RATING = "critics_rating";
-	private static final String CRITICS_SCORE = "critics_score";
-	private static final String RATINGS = "ratings";
-	private static final String THEATER = "theater";
-	private static final String RELEASE_DATES = "release_dates";
-	private static final String RUNTIME = "runtime";
-	private static final String MPAA_RATING = "mpaa_rating";
-	private static final String YEAR = "year";
 
 	public UpcomingObject(JSONObject jsonObject){
 		super(jsonObject);
 	}
-	
-	public String getId(){
-		return getString(ID);
+
+
+	@Override
+	public String getId() {
+		return super.getId();
 	}
 
-	public String getTitle(){
-		return getString(TITLE);
+
+	@Override
+	public String getTitle() {
+		return super.getTitle();
+	}
+
+
+	@Override
+	public String getYear() {
+		return super.getYear();
+	}
+
+
+	@Override
+	public String getMpaa() {
+		return super.getMpaa();
+	}
+
+
+	@Override
+	public String getRuntime() {
+		return super.getRuntime();
+	}
+
+
+	@Override
+	public String getReleaseDateTheater() {
+		return super.getReleaseDateTheater();
+	}
+
+
+	@Override
+	public String getRatingCritics() {
+		return super.getRatingCritics();
+	}
+
+
+	@Override
+	public String getRatingCriticsScore() {
+		return super.getRatingCriticsScore();
+	}
+
+
+	@Override
+	public String getRatingAudienceScore() {
+		return super.getRatingAudienceScore();
+	}
+
+
+	@Override
+	public String getSynopsis() {
+		return super.getSynopsis();
+	}
+
+
+	@Override
+	public String getActorsString() {
+		return super.getActorsString();
+	}
+
+
+	@Override
+	public String getAlternateIds() {
+		return super.getAlternateIds();
+	}
+
+
+	@Override
+	public String getLinkSelf() {
+		return super.getLinkSelf();
+	}
+
+
+	@Override
+	public String getLinkAlternate() {
+		return super.getLinkAlternate();
+	}
+
+
+	@Override
+	public String getLinkCast() {
+		return super.getLinkCast();
+	}
+
+
+	@Override
+	public String getLinkClips() {
+		return super.getLinkClips();
+	}
+
+
+	@Override
+	public String getLinkReviews() {
+		return super.getLinkReviews();
+	}
+
+
+	@Override
+	public String getLinkSimilar() {
+		return super.getLinkSimilar();
+	}
+
+
+	@Override
+	public String getPosters(int posterType) {
+		return super.getPosters(posterType);
 	}
 	
-	public String getYear(){
-		return getString(YEAR);
-	}
-	
-	public String getMpaa(){
-		return getString(MPAA_RATING);
-	}
-	
-	public String getRuntime(){
-		return getString(RUNTIME);
-	}
-	
-	public String getReleaseDateTheater(){
-		return getStringFromObject(RELEASE_DATES, THEATER);
-	}
-	
-	public String getRatingCritics(){
-		return getStringFromObject(RATINGS, CRITICS_RATING);
-	}
-	
-	public String getRatingCriticsScore(){
-		return getStringFromObject(RATINGS, CRITICS_SCORE);
-	}
-	
-	public String getRatingAudienceScore(){
-		return getStringFromObject(RATINGS, AUDIENCE_SCORE);
-	}
-	
-	public String getSynopsis(){
-		return getString(SYNOPSIS);
-	}
-	
-	public String getActorsString(){
-		try {
-			JSONArray cast = jsonObj.getJSONArray(ABRIDGED_CAST);
-			StringBuilder builder = new StringBuilder();
-			//Log.d(LOG_TAG, "cast length: "+cast.length());
-			for(int i = 0; i < cast.length()-1; i++){
-				builder.append(cast.getJSONObject(i).get(NAME)+NAME_DIVIDER);
-				//Log.d(LOG_TAG, ""+i);
-			}
-			builder.append(cast.getJSONObject(cast.length()-1).getString(NAME));
-			//Log.d(LOG_TAG, "cast: "+builder.toString());
-			return builder.toString();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return EMPTY;
-	}
-	
-	public String getAlternateIds(){
-		return getStringFromObject(ALTERNATE_IDS, IMDB);
-	}
-	
-	//links needs to append "?apikey=[your_api_key]"
-	public String getLinkSelf(){
-		return getStringFromObject(LINKS, SELF);
-	}
-	
-	public String getLinkAlternate(){
-		return getStringFromObject(LINKS, ALTERNATE);
-	}
-	
-	public String getLinkCast(){
-		return getStringFromObject(LINKS, CAST);
-	}
-	
-	public String getLinkClips(){
-		return getStringFromObject(LINKS, CLIPS);
-	}
-	
-	public String getLinkReviews(){
-		return getStringFromObject(LINKS, REVIEWS);
-	}
-	
-	public String getLinkSimilar(){
-		return getStringFromObject(LINKS, SIMILAR);
-	}
+
 }

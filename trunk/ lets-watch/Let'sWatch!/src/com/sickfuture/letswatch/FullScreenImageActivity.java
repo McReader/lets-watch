@@ -40,6 +40,7 @@ public class FullScreenImageActivity extends Activity {
 					@Override
 					public void onSuccess(Void c) {
 						mProgressBar.setVisibility(View.GONE);
+						loadHiRes();
 					}
 
 					@Override
@@ -47,23 +48,28 @@ public class FullScreenImageActivity extends Activity {
 						mProgressBar.setVisibility(View.GONE);
 					}
 				});
+		
+	}
+
+	protected void loadHiRes() {
 		String original = mIntent.getStringExtra(POSTERS_ORIGINAL);
 		Log.d("Full screen image intent", original);
 		if(!TextUtils.isEmpty(original)){
 			mProgressBar.setVisibility(View.VISIBLE);
 			ImageLoader.getInstance().bind(mFullScreenImageView, original,
-					new ParamCallback<Void>() {
-	
-						@Override
-						public void onSuccess(Void c) {
-							mProgressBar.setVisibility(View.GONE);
-						}
-	
-						@Override
-						public void onError(Throwable e) {
-							mProgressBar.setVisibility(View.GONE);
-						}
-					});
+				new ParamCallback<Void>() {
+
+					@Override
+					public void onSuccess(Void c) {
+						mProgressBar.setVisibility(View.GONE);
+					}
+
+					@Override
+					public void onError(Throwable e) {
+						mProgressBar.setVisibility(View.GONE);
+					}
+				});
 		}
+		
 	}
 }

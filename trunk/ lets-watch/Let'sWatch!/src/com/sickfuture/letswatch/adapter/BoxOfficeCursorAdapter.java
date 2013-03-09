@@ -42,12 +42,12 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 		if (convertView == null) {
 			view = newView(mContext, mCursor, parent);
 			ViewHolder holder = new ViewHolder();
-			holder.mTitleTextView = (TextView) view
-					.findViewById(R.id.box_office_title_text_view);
-			holder.mCriticsConsensusTextView = (TextView) view
-					.findViewById(R.id.box_office_critics_consensus_text_view);
-			holder.mPosterImageView = (ImageView) view
-					.findViewById(R.id.box_office_poster_image_view);
+			holder.mTitleTextView = (TextView) view.findViewById(R.id.upcoming_title_text_view);
+			holder.mCriticsConsensusTextView = (TextView) view.findViewById(R.id.upcoming_synopsis_text_view);
+			holder.mReleaseDateTextView = (TextView) view.findViewById(R.id.upcoming_release_date_text_view);
+			holder.mMPAATextView = (TextView) view.findViewById(R.id.upcoming_mpaa_text_view);
+			holder.mCastTextView = (TextView) view.findViewById(R.id.upcoming_cast_text_view);
+			holder.mPosterImageView = (ImageView) view.findViewById(R.id.upcoming_poster_image_view);
 			view.setTag(R.string.view_holder, holder);
 		} else {
 			view = convertView;
@@ -59,43 +59,44 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 	@Override
 	public void bindView(View view, final Context context, final Cursor cursor) {
 		ViewHolder holder = (ViewHolder) view.getTag(R.string.view_holder);
-		final String posterUrl = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS));
+		holder.mReleaseDateTextView.setVisibility(View.INVISIBLE);
+		final String posterUrl = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS_PROFILE));
+		final String orinalUrl = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS_ORIGINAL));
 		if (!TextUtils.isEmpty(posterUrl)) {
 			holder.mPosterImageView.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(context, FullScreenImageActivity.class);
 					intent.putExtra(POSTERS_PROFILE, posterUrl);
+					intent.putExtra(POSTERS_ORIGINAL, orinalUrl);
 					context.startActivity(intent);
 					return;
 				}
 			});
-			ImageLoader.getInstance().bind(this, holder.mPosterImageView,
-							cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS)));
+			ImageLoader.getInstance().bind(this, holder.mPosterImageView, posterUrl);
 		}
-
-		holder.mTitleTextView.setText(cursor.getString(cursor
-				.getColumnIndex(Contract.BoxOfficeColumns.MOVIE_TITLE)));
-		if (!TextUtils.isEmpty(cursor.getString(cursor
-				.getColumnIndex(Contract.BoxOfficeColumns.CRITICS_CONSENSUS)))) {
+		holder.mCastTextView.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.CAST_IDS)));
+		holder.mTitleTextView.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.MOVIE_TITLE)));
+		String consensus = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.CRITICS_CONSENSUS));
+		if (!TextUtils.isEmpty(consensus)) {
 			holder.mCriticsConsensusTextView.setVisibility(View.VISIBLE);
-			holder.mCriticsConsensusTextView
-					.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.CRITICS_CONSENSUS)));
+			holder.mCriticsConsensusTextView.setText(consensus);
 		} else {
-			holder.mCriticsConsensusTextView.setVisibility(View.GONE);
+			holder.mCriticsConsensusTextView
+					.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.SYNOPSIS)));
 		}
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-		View view = View.inflate(context, R.layout.adapter_box_office, null);
+		View view = View.inflate(context, R.layout.adapter_upcoming, null);
 		return view;
 	}
 
 	// ViewHolder pattern implementation class
 	static class ViewHolder {
 		
-		TextView mTitleTextView, mCriticsConsensusTextView;
+		TextView mTitleTextView, mCriticsConsensusTextView, mMPAATextView, mReleaseDateTextView, mCastTextView;
 
 		ImageView mPosterImageView;
 	}

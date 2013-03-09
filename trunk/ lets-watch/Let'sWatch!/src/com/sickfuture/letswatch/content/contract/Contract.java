@@ -15,13 +15,6 @@ public class Contract {
 		private BoxOfficeColumns() {
 		}
 
-		public final static String[] COLUMNS = {
-				Contract.BoxOfficeColumns.MOVIE_ID,
-				Contract.BoxOfficeColumns.MOVIE_TITLE,
-				Contract.BoxOfficeColumns.CRITICS_CONSENSUS,
-				Contract.BoxOfficeColumns.SYNOPSIS,
-				Contract.BoxOfficeColumns.POSTERS };
-
 		public static final String TABLE_NAME = "BOX_OFFICE_TABLE";
 
 		public static final String CONTENT_TYPE = "vnd.android.cursor.dir/BOX_OFFICE_TABLE";
@@ -33,11 +26,76 @@ public class Contract {
 
 		public static final String MOVIE_TITLE = "MOVIE_TITLE";
 
+		public static final String YEAR = "YEAR";
+		
+		public static final String MPAA = "MPAA";
+
+		public static final String RUNTIME = "RUNTIME";
+		
+		public static final String RELEASE_DATE_THEATER = "RELEASE_DATE_THEATER";
+		
 		public static final String CRITICS_CONSENSUS = "CRITICS_CONSENSUS";
 
 		public static final String SYNOPSIS = "SYNOPSIS";
 
-		public static final String POSTERS = "POSTERS";
+		public static final String RATING_CRITICS = "RATING_CRITICS";
+		
+		public static final String RATING_CRITICS_SCORE = "RATING_CRITICS_SCORE";
+		
+		public static final String RATING_AUDIENCE= "RATING_AUDIENCE";
+		
+		public static final String RATING_AUDIENCE_SCORE = "RATING_AUDIENCE_SCORE";
+
+		public static final String POSTERS_THUMBNAIL = "POSTERS_THUMBNAIL";
+		
+		public static final String POSTERS_PROFILE = "POSTERS_PROFILE";
+		
+		public static final String POSTERS_DETAILED = "POSTERS_DETAILED";
+		
+		public static final String POSTERS_ORIGINAL = "POSTERS_ORIGINAL";
+		
+		public static final String CAST_IDS = "CAST_IDS";
+		
+		public static final String ALTERNATE_IDS = "ALTERNATE_IDS";
+		
+		public static final String LINK_SELF = "LINK_SELF";
+		
+		public static final String LINK_ALTRENATE = "LINK_ALTRENATE";
+		
+		public static final String LINK_CAST = "LINK_CAST";
+		
+		public static final String LINK_CLIPS = "LINK_CLIPS";
+		
+		public static final String LINK_REVIEWS = "LINK_REVIEWS";
+		
+		public static final String LINK_SIMILAR = "LINK_SIMILAR";
+		
+		public final static String[] COLUMNS = {
+			Contract.BoxOfficeColumns.MOVIE_ID,
+			Contract.BoxOfficeColumns.MOVIE_TITLE,
+			Contract.BoxOfficeColumns.YEAR,
+			Contract.BoxOfficeColumns.MPAA,
+			Contract.BoxOfficeColumns.RUNTIME,
+			Contract.BoxOfficeColumns.RELEASE_DATE_THEATER,
+			Contract.BoxOfficeColumns.CRITICS_CONSENSUS,
+			Contract.BoxOfficeColumns.SYNOPSIS,
+			Contract.BoxOfficeColumns.RATING_CRITICS,
+			Contract.BoxOfficeColumns.RATING_CRITICS_SCORE,
+			Contract.BoxOfficeColumns.RATING_AUDIENCE,
+			Contract.BoxOfficeColumns.RATING_AUDIENCE_SCORE,
+			Contract.BoxOfficeColumns.POSTERS_THUMBNAIL,
+			Contract.BoxOfficeColumns.POSTERS_PROFILE,
+			Contract.BoxOfficeColumns.POSTERS_DETAILED,
+			Contract.BoxOfficeColumns.POSTERS_ORIGINAL,
+			Contract.BoxOfficeColumns.CAST_IDS,
+			Contract.BoxOfficeColumns.ALTERNATE_IDS,
+			Contract.BoxOfficeColumns.LINK_SELF,
+			Contract.BoxOfficeColumns.LINK_ALTRENATE,
+			Contract.BoxOfficeColumns.LINK_CAST,
+			Contract.BoxOfficeColumns.LINK_CLIPS,
+			Contract.BoxOfficeColumns.LINK_REVIEWS,
+			Contract.BoxOfficeColumns.LINK_SIMILAR };
+
 	}
 	
 	public static final class UpcomingColumns implements BaseColumns {
