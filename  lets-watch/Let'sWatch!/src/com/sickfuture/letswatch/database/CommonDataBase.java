@@ -1,7 +1,10 @@
 package com.sickfuture.letswatch.database;
 
+import com.sickfuture.letswatch.ContextHolder;
+
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -97,8 +100,7 @@ public class CommonDataBase extends SQLiteOpenHelper {
 
 	private boolean isTableExists(SQLiteDatabase database, String tableName) {
 		Cursor cursor = database.rawQuery(
-				SELECT_DISTINCT_TBL
-						+ tableName + "'", null);
+				SELECT_DISTINCT_TBL + tableName + "'", null);
 		if (cursor.getCount() > 0) {
 			cursor.close();
 			return true;

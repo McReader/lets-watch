@@ -22,12 +22,13 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.sickfuture.letswatch.R;
 import com.sickfuture.letswatch.adapter.BoxOfficeCursorAdapter;
 import com.sickfuture.letswatch.content.contract.Contract;
-import com.sickfuture.letswatch.http.HttpManager;
+import com.sickfuture.letswatch.database.DBHelperFactory;
 import com.sickfuture.letswatch.service.BoxOfficeService;
 import com.sickfuture.letswatch.service.common.CommonService;
 import com.sickfuture.letswatch.utils.InetChecker;
 
-public class BoxOfficeFragment extends SherlockFragment implements	OnRefreshListener<ListView>, LoaderCallbacks<Cursor> {
+public class BoxOfficeFragment extends SherlockFragment implements
+		OnRefreshListener<ListView>, LoaderCallbacks<Cursor> {
 
 	private PullToRefreshListView mListView;
 
@@ -36,10 +37,12 @@ public class BoxOfficeFragment extends SherlockFragment implements	OnRefreshList
 	private BroadcastReceiver mBroadcastReceiver;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,	Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 
 		View rootView = inflater.inflate(R.layout.fragment_box_office, null);
-		mListView = (PullToRefreshListView) rootView.findViewById(R.id.box_office_pull_refresh_list);
+		mListView = (PullToRefreshListView) rootView
+				.findViewById(R.id.box_office_pull_refresh_list);
 		mBroadcastReceiver = new BroadcastReceiver() {
 
 			@Override
@@ -60,10 +63,12 @@ public class BoxOfficeFragment extends SherlockFragment implements	OnRefreshList
 		filter.addAction(CommonService.ACTION_ON_ERROR);
 		filter.addAction(CommonService.ACTION_ON_SUCCESS);
 		getActivity().registerReceiver(mBroadcastReceiver, filter);
-		mBoxOfficeCursorAdapter = new BoxOfficeCursorAdapter(getSherlockActivity(), null);
+		mBoxOfficeCursorAdapter = new BoxOfficeCursorAdapter(
+				getSherlockActivity(), null);
 		mListView.setAdapter(mBoxOfficeCursorAdapter);
 		mListView.setOnRefreshListener(this);
-		getSherlockActivity().getSupportLoaderManager().initLoader(0, null, this);
+		getSherlockActivity().getSupportLoaderManager().initLoader(0, null,
+				this);
 		return rootView;
 	}
 
@@ -76,24 +81,29 @@ public class BoxOfficeFragment extends SherlockFragment implements	OnRefreshList
 	@Override
 	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 		if (InetChecker.checkInetConnection(getSherlockActivity())) {
-			Intent intent = new Intent(getSherlockActivity(), BoxOfficeService.class);
-			intent.putExtra("url", getString(R.string.API_BOX_OFFICE_REQUEST_URL));
+			DBHelperFactory.getInstance().deleteTable(
+					Contract.BoxOfficeColumns.TABLE_NAME, null, null);
+			Intent intent = new Intent(getSherlockActivity(),
+					BoxOfficeService.class);
+			intent.putExtra("url",
+					getString(R.string.API_BOX_OFFICE_REQUEST_URL));
 			getSherlockActivity().startService(intent);
 		} else {
-			mListView.onRefreshComplete();
+			 refreshView.onRefreshComplete();
 		}
 
 	}
 
 	@Override
 	public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-		return new CursorLoader(getSherlockActivity(), Contract.BoxOfficeColumns.CONTENT_URI, null, null, null, null);
+		return new CursorLoader(getSherlockActivity(),
+				Contract.BoxOfficeColumns.CONTENT_URI, null, null, null, null);
 	}
 
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 		if (cursor.getCount() == 0) {
-			onRefresh(null);
+			onRefresh(mListView);
 		}
 		mBoxOfficeCursorAdapter.swapCursor(cursor);
 	}

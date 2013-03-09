@@ -42,19 +42,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.util.Log;
-import android.webkit.JsPromptResult;
 
 import com.sickfuture.letswatch.ContextHolder;
 
 public class HttpManager {
 
 	private static final String LOG_TAG = "HttpManager";
-	
+
 	private static final String UTF_8 = "UTF_8";
 
 	private HttpClient mClient;
 
-	private static HttpManager instance;
+	private static volatile HttpManager instance;
 
 	private static final int SO_TIMEOUT = 20000;
 
@@ -70,11 +69,15 @@ public class HttpManager {
 
 		// REGISTERS SCHEMES FOR BOTH HTTP AND HTTPS
 		SchemeRegistry registry = new SchemeRegistry();
-		registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-		final SSLSocketFactory sslSocketFactory = SSLSocketFactory.getSocketFactory();
-		sslSocketFactory.setHostnameVerifier(SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+		registry.register(new Scheme("http", PlainSocketFactory
+				.getSocketFactory(), 80));
+		final SSLSocketFactory sslSocketFactory = SSLSocketFactory
+				.getSocketFactory();
+		sslSocketFactory
+				.setHostnameVerifier(SSLSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
 		registry.register(new Scheme("https", sslSocketFactory, 443));
-		ThreadSafeClientConnManager manager = new ThreadSafeClientConnManager(params, registry);
+		ThreadSafeClientConnManager manager = new ThreadSafeClientConnManager(
+				params, registry);
 		mClient = new DefaultHttpClient(manager, params);
 		mConnectivityManager = (ConnectivityManager) ContextHolder
 				.getInstance().getContext()
@@ -82,13 +85,20 @@ public class HttpManager {
 	}
 
 	public static HttpManager getInstance() {
+		HttpManager localInstance = instance;
 		if (instance == null) {
-			instance = new HttpManager();
+			synchronized (HttpManager.class) {
+				localInstance = instance;
+				if (localInstance == null) {
+					instance = localInstance = new HttpManager();
+				}
+			}
 		}
-		return instance;
+		return localInstance;
 	}
 
-	public Bitmap loadBitmap(String url) throws MalformedURLException, IOException {
+	public Bitmap loadBitmap(String url) throws MalformedURLException,
+			IOException {
 		InputStream openStream = null;
 		try {
 			openStream = new URL(url).openStream();
@@ -128,7 +138,32 @@ public class HttpManager {
 		return new JSONObject(loadAsString(url));
 	}
 
-	private String loadAsString(HttpRequestBase request) throws ClientProtocolException, IOException {
+	private String loadAsString(HttpRequestBase request)
+			throws ClientProtocolException, IOException {
+		/*
+		 * HttpResponse response = mClient.execute(request); if
+		 * (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
+		 * String entityValue = null; entityValue =
+		 * EntityUtils.toString(response.getEntity()); throw new
+		 * IOException(response.getStatusLine().getReasonPhrase() + " " +
+		 * entityValue + " " + response.getStatusLine().getStatusCode()); }
+		 */
+		final InputStream is = loadInputStream(request);
+		BufferedReader rd = null;
+		try {
+			rd = new BufferedReader(new InputStreamReader(is,
+					Charset.forName("UTF-8")));
+			final String jsonText = readAll(rd);
+			Log.d(LOG_TAG, "source = " + jsonText);
+			return jsonText;
+		} finally {
+			rd.close();
+			is.close();
+		}
+	}
+
+	private InputStream loadInputStream(HttpRequestBase request)
+			throws ParseException, IOException {
 		HttpResponse response = mClient.execute(request);
 		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
 			String entityValue = null;
@@ -139,28 +174,6 @@ public class HttpManager {
 		}
 		final InputStream is = new URL(request.getURI().toString())
 				.openStream();
-		BufferedReader rd = null;
-		try {
-			rd = new BufferedReader(new InputStreamReader(is, Charset.forName("UTF-8")));
-			final String jsonText = readAll(rd);
-			Log.d(LOG_TAG, "source = "+jsonText);
-			return jsonText;
-		} finally {
-			rd.close();
-			is.close();
-		}
-	}
-
-	private InputStream loadInputStream(HttpRequestBase request) throws ParseException, IOException {
-		HttpResponse response = mClient.execute(request);
-		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-			String entityValue = null;
-			entityValue = EntityUtils.toString(response.getEntity());
-			throw new IOException(response.getStatusLine().getReasonPhrase()
-					+ " " + entityValue + " "
-					+ response.getStatusLine().getStatusCode());
-		}
-		final InputStream is = new URL(request.getURI().toString()).openStream();
 		return is;
 	}
 
@@ -172,8 +185,8 @@ public class HttpManager {
 		}
 		return sb.toString();
 	}
-	
-	//if won't work, maybe because connectivity manager is static
+
+	// if won't work, maybe because connectivity manager is static
 	public boolean isAvalibleInetConnection() {
 		return mConnectivityManager.getActiveNetworkInfo() != null;
 	}

@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -38,39 +37,45 @@ import com.sickfuture.letswatch.task.ParamCallback;
 public class ImageLoader {
 
 	private int mNumberOnExecute;
-	
+
 	private static final int CORE_POOL_SIZE = 1;
-	
+
 	private static final int MAXIMUM_POOL_SIZE = 50;
-	
+
 	private static final int KEEP_ALIVE = 10;
 
-	private static final BlockingQueue<Runnable> sWorkQueue =
-	            new LinkedBlockingQueue<Runnable>(MAXIMUM_POOL_SIZE);
+	private static final BlockingQueue<Runnable> sWorkQueue = new LinkedBlockingQueue<Runnable>(
+			MAXIMUM_POOL_SIZE);
 
 	private static final ThreadFactory sThreadFactory = new ThreadFactory() {
-	        private final AtomicInteger mCount = new AtomicInteger(1);
+		private final AtomicInteger mCount = new AtomicInteger(1);
 
-	        public Thread newThread(Runnable r) {
-	            return new Thread(r, "ImageAsyncTask #" + mCount.getAndIncrement());
-	        }
-	    };
+		public Thread newThread(Runnable r) {
+			return new Thread(r, "ImageAsyncTask #" + mCount.getAndIncrement());
+		}
+	};
 
-	private static final ThreadPoolExecutor mExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE,
-	            MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, sWorkQueue, sThreadFactory);
-	
+	private static final ThreadPoolExecutor mExecutor = new ThreadPoolExecutor(
+			CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS,
+			sWorkQueue, sThreadFactory);
 
 	private static final String LOG_TAG = "ImageLoader";
 
-	private static ImageLoader instance;
+	private static volatile ImageLoader instance;
 
 	public static ImageLoader getInstance() {
+		ImageLoader localInstance = instance;
 		if (instance == null) {
-			instance = new ImageLoader();
+			synchronized (ImageLoader.class) {
+				localInstance = instance;
+				if (localInstance == null) {
+					instance = localInstance = new ImageLoader();
+				}
+			}
 		}
-		return instance;
+		return localInstance;
 	}
-	
+
 	private List<Callback> mQueue;
 
 	private LruCache<String, Bitmap> mStorage;
@@ -125,7 +130,8 @@ public class ImageLoader {
 
 	}
 
-	public void bind(final BaseAdapter adapter, final ImageView imageView, final String url) {
+	public void bind(final BaseAdapter adapter, final ImageView imageView,
+			final String url) {
 		imageView.setImageBitmap(null);
 		Bitmap bitm = null;
 		bitm = mStorage.get(url);
@@ -151,9 +157,10 @@ public class ImageLoader {
 		}
 		proceed();
 	}
-	
-	public void bind(final ImageView imageView, final String url, final ParamCallback<Void> paramCallback) {
-		//imageView.setImageBitmap(null);
+
+	public void bind(final ImageView imageView, final String url,
+			final ParamCallback<Void> paramCallback) {
+		// imageView.setImageBitmap(null);
 		Bitmap bitm = null;
 		bitm = mStorage.get(url);
 		if (bitm != null) {
@@ -207,7 +214,8 @@ public class ImageLoader {
 				}
 
 				public void onError(Exception e) {
-					imageView.setImageResource(android.R.drawable.alert_dark_frame);
+					imageView
+							.setImageResource(android.R.drawable.alert_dark_frame);
 				}
 
 				public String getUrl() {
@@ -219,9 +227,9 @@ public class ImageLoader {
 	}
 
 	private void proceed() {
-		if(mNumberOnExecute>30) {
-			if(mQueue.size()>2)
-				mQueue.remove(mQueue.size()-1);
+		if (mNumberOnExecute > 30) {
+			if (mQueue.size() > 2)
+				mQueue.remove(mQueue.size() - 1);
 			return;
 		}
 		if (mQueue.isEmpty()) {
@@ -271,7 +279,8 @@ public class ImageLoader {
 		return null;
 	}
 
-	private class ImageTask extends CustomExecutorAsyncTask<Callback, Void, Object> {
+	private class ImageTask extends
+			CustomExecutorAsyncTask<Callback, Void, Object> {
 
 		private Callback mCallback;
 
@@ -325,6 +334,5 @@ public class ImageLoader {
 			mNumberOnExecute--;
 		}
 
-			
 	}
 }
