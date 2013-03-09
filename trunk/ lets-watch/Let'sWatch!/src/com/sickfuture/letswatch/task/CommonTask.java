@@ -12,8 +12,8 @@ public abstract class CommonTask<T> extends AsyncTask<String, Void, T> {
 		this.mParamCallback = paramCallback;
 	}
 
-	public abstract Object load(String url); 
-	
+	public abstract Object load(String url);
+
 	public abstract T convert(Object source) throws Exception;
 
 	private Exception e;
@@ -22,7 +22,9 @@ public abstract class CommonTask<T> extends AsyncTask<String, Void, T> {
 	protected T doInBackground(String... params) {
 		try {
 			Object source = load(params[0]);
-			return convert(source);
+			if (source != null) {
+				return convert(source);
+			}
 		} catch (Exception e) {
 			this.e = e;
 		}

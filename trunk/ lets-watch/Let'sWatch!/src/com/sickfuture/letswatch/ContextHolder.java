@@ -1,19 +1,27 @@
 package com.sickfuture.letswatch;
 
+import com.sickfuture.letswatch.images.ImageLoader;
+
 import android.content.Context;
 
 public class ContextHolder {
 
-	private static ContextHolder instance;
+	private static volatile ContextHolder instance;
 
 	private ContextHolder() {
 	}
 
 	public static ContextHolder getInstance() {
+		ContextHolder localInstance = instance;
 		if (instance == null) {
-			instance = new ContextHolder();
+			synchronized (ContextHolder.class) {
+				localInstance = instance;
+				if (localInstance == null) {
+					instance = localInstance = new ContextHolder();
+				}
+			}
 		}
-		return instance;
+		return localInstance;
 	}
 
 	private Context mContext;

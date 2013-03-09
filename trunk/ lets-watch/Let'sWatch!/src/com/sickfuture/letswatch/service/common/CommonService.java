@@ -1,14 +1,9 @@
 package com.sickfuture.letswatch.service.common;
 
-import java.util.List;
-
-import org.json.JSONObject;
-
 import android.app.Service;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.IBinder;
-import android.util.Log;
 
 import com.sickfuture.letswatch.task.ParamCallback;
 
