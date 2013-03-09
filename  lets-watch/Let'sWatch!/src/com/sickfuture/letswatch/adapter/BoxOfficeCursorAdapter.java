@@ -18,7 +18,9 @@ import com.sickfuture.letswatch.images.ImageLoader;
 
 public class BoxOfficeCursorAdapter extends CursorAdapter {
 
-	public static final String IMAGE_VIEW_SOURCE = "IMAGE_VIEW_SOURCE";
+	public static final String POSTERS_PROFILE = "posters_profile";
+	
+	public static final String POSTERS_ORIGINAL = "posters_original";
 
 	public BoxOfficeCursorAdapter(Context context, Cursor c) {
 		super(context, c, true);
@@ -63,7 +65,7 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 				@Override
 				public void onClick(View v) {
 					Intent intent = new Intent(context, FullScreenImageActivity.class);
-					intent.putExtra(IMAGE_VIEW_SOURCE, posterUrl);
+					intent.putExtra(POSTERS_PROFILE, posterUrl);
 					context.startActivity(intent);
 					return;
 				}

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/background_dark"
@@ -9,6 +10,8 @@
         android:id="@+id/full_screen_image_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:scaleType="centerInside" />
 
@@ -16,8 +19,9 @@
         android:id="@+id/full_screen_image_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_gravity="center"
-        android:indeterminateDrawable="@drawable/progress_indeterminate"
-        android:visibility="visible" >
+        android:indeterminateDrawable="@drawable/progress_indeterminate" >
     </ProgressBar>
-</LinearLayout>
+
+</RelativeLayout>

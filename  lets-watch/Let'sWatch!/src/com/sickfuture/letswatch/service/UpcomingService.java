@@ -71,7 +71,7 @@ public class UpcomingService extends CommonService<List<JSONObject>> {
 					mList.add(jsonArray.getJSONObject(i));
 				}
 				JSONModel json = new JSONModel(sourceObject);
-				String nextPage = json.getStringFromObject("links", "next");
+				String nextPage = json.getNextLink();
 				if(!TextUtils.isEmpty(nextPage)){
 					nextPage = nextPage + getString(R.string.API_APPEND_KEY);
 				}

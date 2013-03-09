@@ -4,9 +4,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 import com.sickfuture.letswatch.bo.common.JSONModel;
 
 public class UpcomingObject extends JSONModel {
+	
+	private static final String LOG_TAG = "UpcomingObject";
 	
 	private static final String ALTERNATE = "alternate";
 	private static final String CAST = "cast";
@@ -78,10 +82,13 @@ public class UpcomingObject extends JSONModel {
 		try {
 			JSONArray cast = jsonObj.getJSONArray(ABRIDGED_CAST);
 			StringBuilder builder = new StringBuilder();
+			//Log.d(LOG_TAG, "cast length: "+cast.length());
 			for(int i = 0; i < cast.length()-1; i++){
 				builder.append(cast.getJSONObject(i).get(NAME)+NAME_DIVIDER);
+				//Log.d(LOG_TAG, ""+i);
 			}
-			builder.append(cast.getJSONObject(cast.length()).getString(NAME));
+			builder.append(cast.getJSONObject(cast.length()-1).getString(NAME));
+			//Log.d(LOG_TAG, "cast: "+builder.toString());
 			return builder.toString();
 		} catch (JSONException e) {
 			e.printStackTrace();
