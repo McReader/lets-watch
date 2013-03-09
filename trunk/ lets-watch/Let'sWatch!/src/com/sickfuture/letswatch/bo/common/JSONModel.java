@@ -3,7 +3,15 @@ package com.sickfuture.letswatch.bo.common;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Log;
+
 public class JSONModel {
+
+	private static final String NEXT = "next";
+
+	private static final String LINKS = "links";
+
+	private static final String LOG_TAG = "JSONModel";
 	
 	private static final String POSTERS = "posters";
 	
@@ -66,15 +74,23 @@ public class JSONModel {
 	public String getStringFromObject(String object, String key){
 		String s = EMPTY;
 		try {
-			JSONObject obj = jsonObj.getJSONObject(object);
-			if(!obj.isNull(key))
-				s = obj.getString(key);
-			obj = null;
+			if(jsonObj.has(object)){
+				JSONObject obj = jsonObj.getJSONObject(object);
+				if(!obj.isNull(key))
+					s = obj.getString(key);
+				//Log.d(LOG_TAG, object+":"+key+":"+s);
+				obj = null;
+			}
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		return s;
 	}
+
+	public String getNextLink(){
+		return getStringFromObject(LINKS, NEXT);
+	}
+	
 	public String getPosters(int posterType) {
 		switch (posterType) {
 		case THUMBNAIL:

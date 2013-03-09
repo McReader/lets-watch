@@ -11,7 +11,13 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import android.app.ActivityManager;
 import android.content.Context;
@@ -31,6 +37,29 @@ import com.sickfuture.letswatch.task.ParamCallback;
 
 public class ImageLoader {
 
+	private int mNumberOnExecute;
+	
+	private static final int CORE_POOL_SIZE = 1;
+	
+	private static final int MAXIMUM_POOL_SIZE = 50;
+	
+	private static final int KEEP_ALIVE = 10;
+
+	private static final BlockingQueue<Runnable> sWorkQueue =
+	            new LinkedBlockingQueue<Runnable>(MAXIMUM_POOL_SIZE);
+
+	private static final ThreadFactory sThreadFactory = new ThreadFactory() {
+	        private final AtomicInteger mCount = new AtomicInteger(1);
+
+	        public Thread newThread(Runnable r) {
+	            return new Thread(r, "ImageAsyncTask #" + mCount.getAndIncrement());
+	        }
+	    };
+
+	private static final ThreadPoolExecutor mExecutor = new ThreadPoolExecutor(CORE_POOL_SIZE,
+	            MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS, sWorkQueue, sThreadFactory);
+	
+
 	private static final String LOG_TAG = "ImageLoader";
 
 	private static ImageLoader instance;
@@ -41,7 +70,7 @@ public class ImageLoader {
 		}
 		return instance;
 	}
-
+	
 	private List<Callback> mQueue;
 
 	private LruCache<String, Bitmap> mStorage;
@@ -75,6 +104,7 @@ public class ImageLoader {
 			}
 		};
 		mCacheDir = ContextHolder.getInstance().getContext().getCacheDir();
+		mNumberOnExecute = 0;
 	}
 
 	public String md5(String s) {
@@ -123,7 +153,7 @@ public class ImageLoader {
 	}
 	
 	public void bind(final ImageView imageView, final String url, final ParamCallback<Void> paramCallback) {
-		imageView.setImageBitmap(null);
+		//imageView.setImageBitmap(null);
 		Bitmap bitm = null;
 		bitm = mStorage.get(url);
 		if (bitm != null) {
@@ -136,6 +166,7 @@ public class ImageLoader {
 			mQueue.add(0, new Callback() {
 
 				public void onSuccess(Bitmap bm) {
+					imageView.setImageBitmap(bm);
 					paramCallback.onSuccess(null);
 				}
 
@@ -188,11 +219,16 @@ public class ImageLoader {
 	}
 
 	private void proceed() {
+		if(mNumberOnExecute>30) {
+			if(mQueue.size()>2)
+				mQueue.remove(mQueue.size()-1);
+			return;
+		}
 		if (mQueue.isEmpty()) {
 			return;
 		}
 		final Callback callback = mQueue.remove(0);
-		new ImageTask().execute(Executors.newCachedThreadPool(), callback);
+		new ImageTask().execute(mExecutor, callback);
 	}
 
 	private void putBitmapToCache(Bitmap b, String url) {
@@ -274,6 +310,11 @@ public class ImageLoader {
 		}
 
 		@Override
+		protected void onPreExecute() {
+			mNumberOnExecute++;
+		}
+
+		@Override
 		protected void onPostExecute(Object result) {
 			if (result instanceof Bitmap) {
 				mCallback.onSuccess((Bitmap) result);
@@ -281,7 +322,7 @@ public class ImageLoader {
 			if (result instanceof Exception) {
 				mCallback.onError((Exception) result);
 			}
-
+			mNumberOnExecute--;
 		}
 
 			
