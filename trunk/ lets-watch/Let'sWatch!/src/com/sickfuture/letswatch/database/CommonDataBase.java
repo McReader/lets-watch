@@ -75,9 +75,6 @@ public class CommonDataBase extends SQLiteOpenHelper {
 	@Override
 	public void onOpen(SQLiteDatabase db) {
 		super.onOpen(db);
-		/*if (!isTableExists(db, mTableName)) {
-			onCreate(db);
-		}*/
 	}
 
 	/** Note to self: Don't forget delete logs */
@@ -86,6 +83,12 @@ public class CommonDataBase extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Class<TableGetters>[] subClasses = (Class<TableGetters>[]) Contract.class
 				.getClasses();
+		if(subClasses == null){
+			throw new ClassCastException("WARNING! Check your Contract class, please!");
+		}
+		if(subClasses.length < 1){
+			throw new SQLException("WARNING! No tables in Contract!");
+		}
 		Log.i("REFLECTION TEST", "Class Array Size:  " + subClasses.length);
 		String tableName=null;
 		String[] columns=null; 

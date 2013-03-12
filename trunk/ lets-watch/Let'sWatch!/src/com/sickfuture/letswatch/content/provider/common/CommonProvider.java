@@ -9,11 +9,15 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
 
-import com.sickfuture.letswatch.database.DBHelperFactory;
-import com.sickfuture.letswatch.database.Values;
+import com.sickfuture.letswatch.database.CommonDataBase;
 import com.sickfuture.letswatch.service.common.CommonService;
 
-public abstract class CommonProvider extends ContentProvider implements Values {
+public abstract class CommonProvider extends ContentProvider {
+
+	private CommonDataBase mHelper;
+
+	public CommonProvider() {
+	}
 
 	@Override
 	public int delete(Uri uri, String string, String[] strings) {
@@ -34,10 +38,9 @@ public abstract class CommonProvider extends ContentProvider implements Values {
 			for (ContentValues contentValues : values) {
 				jsonObject = new JSONObject(
 						contentValues.getAsString(CommonService.DATA));
-				itemID = DBHelperFactory
-						.getInstance()
-						.getHelper(getContext(), getTableName(), getColoumns(),
-								this).addItem(jsonObject);
+				mHelper = CommonDataBase.getInstance();
+				itemID = mHelper.addItem(getTableName(), getColumns(),
+						jsonObject, getContentValues(jsonObject));
 				if (itemID <= 0) {
 					throw new SQLException("Failed to insert row into " + uri);
 				}
@@ -58,10 +61,9 @@ public abstract class CommonProvider extends ContentProvider implements Values {
 		long itemID;
 		try {
 			jsonObject = new JSONObject(values.getAsString(CommonService.DATA));
-			itemID = DBHelperFactory
-					.getInstance()
-					.getHelper(getContext(), getTableName(), getColoumns(),
-							this).addItem(jsonObject);
+			mHelper = CommonDataBase.getInstance();
+			itemID = mHelper.addItem(getTableName(), getColumns(), jsonObject,
+					getContentValues(jsonObject));
 			Uri itemUri = Uri.parse(getContentURI() + "/" + itemID);
 			getContext().getContentResolver().notifyChange(itemUri, null);
 			return itemUri;
@@ -79,9 +81,9 @@ public abstract class CommonProvider extends ContentProvider implements Values {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		Cursor items = DBHelperFactory.getInstance()
-				.getHelper(getContext(), getTableName(), getColoumns(), this)
-				.getItems(getOrderBy(), selection, selectionArgs);
+		mHelper = CommonDataBase.getInstance();
+		Cursor items = mHelper.getItems(getTableName(), getColumns(),
+				getOrderBy(), selection, selectionArgs);
 		items.setNotificationUri(getContext().getContentResolver(), uri);
 		return items;
 	}
@@ -92,10 +94,6 @@ public abstract class CommonProvider extends ContentProvider implements Values {
 		return 0;
 	}
 
-	public ContentValues getValues(JSONObject jsonObject) throws JSONException {
-		return getContentValues(jsonObject);
-	}
-
 	protected abstract String getOrderBy();
 
 	protected abstract String getTableName();
@@ -104,7 +102,7 @@ public abstract class CommonProvider extends ContentProvider implements Values {
 
 	protected abstract Uri getContentURI();
 
-	protected abstract String[] getColoumns();
+	protected abstract String[] getColumns();
 
 	protected abstract ContentValues getContentValues(JSONObject jsonObject)
 			throws JSONException;
