@@ -1,7 +1,10 @@
 package com.sickfuture.letswatch;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -10,19 +13,24 @@ import android.widget.ProgressBar;
 
 import com.custom.TouchImageView;
 import com.sickfuture.letswatch.images.ImageLoader;
+import com.sickfuture.letswatch.service.UpcomingService;
 import com.sickfuture.letswatch.task.ParamCallback;
 
 public class FullScreenImageActivity extends Activity {
 
-	public static final String POSTERS_PROFILE = "posters_profile";
+	private static int PAGINATION = R.string.pagination;
 	
-	public static final String POSTERS_ORIGINAL = "posters_original";
+	private SharedPreferences mPreferences;
 
 	private TouchImageView mFullScreenImageView;
 
 	private ProgressBar mProgressBar;
 	
 	private Intent mIntent;
+
+	public static final String POSTERS_PROFILE = "posters_profile";
+	
+	public static final String POSTERS_ORIGINAL = "posters_original";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -72,4 +80,15 @@ public class FullScreenImageActivity extends Activity {
 		}
 		
 	}
+	
+	@Override
+	protected void onDestroy() {
+		mPreferences = getSharedPreferences(getString(PAGINATION), Context.MODE_PRIVATE);
+		Editor editor = mPreferences.edit();
+		editor.remove(UpcomingService.NEXT_UPCOMING);
+		editor.commit();
+		super.onDestroy();
+	}
+
+
 }
