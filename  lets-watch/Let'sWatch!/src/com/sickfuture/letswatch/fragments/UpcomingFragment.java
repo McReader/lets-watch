@@ -56,12 +56,10 @@ public class UpcomingFragment extends SherlockFragment implements
 	private SharedPreferences mPreferences;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_upcoming, null);
 		mViewLoading = inflater.inflate(R.layout.view_loading, null);
-		mListViewUpcoming = (PullToRefreshListView) rootView
-				.findViewById(R.id.upcoming_pull_refresh_list);
+		mListViewUpcoming = (PullToRefreshListView) rootView.findViewById(R.id.upcoming_pull_refresh_list);
 		mListViewUpcoming.setOnScrollListener(this);
 		mBroadcastReceiver = new BroadcastReceiver() {
 
@@ -85,23 +83,18 @@ public class UpcomingFragment extends SherlockFragment implements
 		filter.addAction(CommonService.ACTION_ON_ERROR);
 		filter.addAction(CommonService.ACTION_ON_SUCCESS);
 		getActivity().registerReceiver(mBroadcastReceiver, filter);
-		mUpcomingCursorAdapter = new UpcomingCursorAdapter(
-				getSherlockActivity(), null);
+		mUpcomingCursorAdapter = new UpcomingCursorAdapter(getSherlockActivity(), null);
+		ListView actualListView = mListViewUpcoming.getRefreshableView();
+		actualListView.addFooterView(mViewLoading);
 		mListViewUpcoming.setAdapter(mUpcomingCursorAdapter);
 		mListViewUpcoming.setOnRefreshListener(this);
-		getSherlockActivity().getSupportLoaderManager().initLoader(1, null,
-				this);
+		getSherlockActivity().getSupportLoaderManager().initLoader(1, null, this);
 		return rootView;
 	}
 
 	@Override
 	public void onDestroy() {
 		getSherlockActivity().unregisterReceiver(mBroadcastReceiver);
-		mPreferences = getSherlockActivity().getSharedPreferences(
-				getString(PAGINATION), Context.MODE_PRIVATE);
-		Editor editor = mPreferences.edit();
-		editor.remove(UpcomingService.NEXT_UPCOMING);
-		editor.commit();
 		super.onDestroy();
 	}
 
@@ -109,10 +102,8 @@ public class UpcomingFragment extends SherlockFragment implements
 	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 		Log.d(LOG_TAG, "onRefresh");
 		if (InetChecker.checkInetConnection(getSherlockActivity())) {
-			DBHelperFactory.getInstance().deleteTable(
-					Contract.UpcomingColumns.TABLE_NAME, null, null);
-			Intent intent = new Intent(getSherlockActivity(),
-					UpcomingService.class);
+			DBHelperFactory.getInstance().deleteTable(Contract.UpcomingColumns.TABLE_NAME, null, null);
+			Intent intent = new Intent(getSherlockActivity(), UpcomingService.class);
 			intent.putExtra(URL, getString(R.string.API_UPCOMING_REQUEST_URL));
 			load(intent);
 		} else {
@@ -152,18 +143,17 @@ public class UpcomingFragment extends SherlockFragment implements
 				&& firstVisibleItem + visibleItemCount + 3 >= totalItemCount) {
 			if (!mLoading) {
 				Log.d(LOG_TAG, "onScroll load");
-				// if(mViewLoadingHidden) hideViewLoading(false);
-				// mListViewUpcoming.addView(mViewLoading);
-				mPreferences = getSherlockActivity().getSharedPreferences(
-						getString(PAGINATION), Context.MODE_PRIVATE);
-				String nextPage = mPreferences.getString(
-						UpcomingService.NEXT_UPCOMING, null);
+				
+				mPreferences = getSherlockActivity().getSharedPreferences(getString(PAGINATION), Context.MODE_PRIVATE);
+				String nextPage = mPreferences.getString(UpcomingService.NEXT_UPCOMING, null);
 				if (!TextUtils.isEmpty(nextPage)) {
+					if(mViewLoadingHidden) hideViewLoading(false);
 					Log.d(LOG_TAG, "next = " + nextPage);
-					Intent intent = new Intent(getSherlockActivity(),
-							UpcomingService.class);
+					Intent intent = new Intent(getSherlockActivity(),UpcomingService.class);
 					intent.putExtra(URL, nextPage);
 					load(intent);
+				} else {
+					if(!mViewLoadingHidden) hideViewLoading(true);
 				}
 			}
 		}
