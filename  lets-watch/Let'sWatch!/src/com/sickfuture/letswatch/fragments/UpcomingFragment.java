@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
@@ -28,7 +27,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.sickfuture.letswatch.R;
 import com.sickfuture.letswatch.adapter.UpcomingCursorAdapter;
 import com.sickfuture.letswatch.content.contract.Contract;
-import com.sickfuture.letswatch.database.DBHelperFactory;
+import com.sickfuture.letswatch.database.CommonDataBase;
 import com.sickfuture.letswatch.service.UpcomingService;
 import com.sickfuture.letswatch.service.common.CommonService;
 import com.sickfuture.letswatch.utils.InetChecker;
@@ -84,9 +83,9 @@ public class UpcomingFragment extends SherlockFragment implements
 		filter.addAction(CommonService.ACTION_ON_SUCCESS);
 		getActivity().registerReceiver(mBroadcastReceiver, filter);
 		mUpcomingCursorAdapter = new UpcomingCursorAdapter(getSherlockActivity(), null);
+		mListViewUpcoming.setAdapter(mUpcomingCursorAdapter);
 		ListView actualListView = mListViewUpcoming.getRefreshableView();
 		actualListView.addFooterView(mViewLoading);
-		mListViewUpcoming.setAdapter(mUpcomingCursorAdapter);
 		mListViewUpcoming.setOnRefreshListener(this);
 		getSherlockActivity().getSupportLoaderManager().initLoader(1, null, this);
 		return rootView;
@@ -102,7 +101,7 @@ public class UpcomingFragment extends SherlockFragment implements
 	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 		Log.d(LOG_TAG, "onRefresh");
 		if (InetChecker.checkInetConnection(getSherlockActivity())) {
-			DBHelperFactory.getInstance().deleteTable(Contract.UpcomingColumns.TABLE_NAME, null, null);
+			CommonDataBase.getInstance().deleteTable(Contract.UpcomingColumns.TABLE_NAME, null, null);
 			Intent intent = new Intent(getSherlockActivity(), UpcomingService.class);
 			intent.putExtra(URL, getString(R.string.API_UPCOMING_REQUEST_URL));
 			load(intent);

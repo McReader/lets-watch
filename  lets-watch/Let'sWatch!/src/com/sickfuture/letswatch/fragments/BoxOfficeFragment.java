@@ -22,7 +22,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import com.sickfuture.letswatch.R;
 import com.sickfuture.letswatch.adapter.BoxOfficeCursorAdapter;
 import com.sickfuture.letswatch.content.contract.Contract;
-import com.sickfuture.letswatch.database.DBHelperFactory;
+import com.sickfuture.letswatch.database.CommonDataBase;
 import com.sickfuture.letswatch.service.BoxOfficeService;
 import com.sickfuture.letswatch.service.common.CommonService;
 import com.sickfuture.letswatch.utils.InetChecker;
@@ -81,7 +81,7 @@ public class BoxOfficeFragment extends SherlockFragment implements
 	@Override
 	public void onRefresh(PullToRefreshBase<ListView> refreshView) {
 		if (InetChecker.checkInetConnection(getSherlockActivity())) {
-			DBHelperFactory.getInstance().deleteTable(
+			CommonDataBase.getInstance().deleteTable(
 					Contract.BoxOfficeColumns.TABLE_NAME, null, null);
 			Intent intent = new Intent(getSherlockActivity(),
 					BoxOfficeService.class);
@@ -89,7 +89,7 @@ public class BoxOfficeFragment extends SherlockFragment implements
 					getString(R.string.API_BOX_OFFICE_REQUEST_URL));
 			getSherlockActivity().startService(intent);
 		} else {
-			 refreshView.onRefreshComplete();
+			refreshView.onRefreshComplete();
 		}
 
 	}

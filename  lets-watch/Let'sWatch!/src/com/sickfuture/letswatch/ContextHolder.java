@@ -1,7 +1,5 @@
 package com.sickfuture.letswatch;
 
-import com.sickfuture.letswatch.images.ImageLoader;
-
 import android.content.Context;
 
 public class ContextHolder {

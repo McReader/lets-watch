@@ -6,8 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -33,6 +31,7 @@ import com.sickfuture.letswatch.ContextHolder;
 import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.task.CustomExecutorAsyncTask;
 import com.sickfuture.letswatch.task.ParamCallback;
+import com.sickfuture.letswatch.utils.Md5;
 
 public class ImageLoader {
 
@@ -112,24 +111,6 @@ public class ImageLoader {
 		mNumberOnExecute = 0;
 	}
 
-	public String md5(String s) {
-		try {
-			MessageDigest digest = java.security.MessageDigest
-					.getInstance("MD5");
-			digest.update(s.getBytes());
-			byte messageDigest[] = digest.digest();
-			StringBuffer hexString = new StringBuffer();
-			for (int i = 0; i < messageDigest.length; i++) {
-				hexString.append(Integer.toHexString(0xFF & messageDigest[i]));
-			}
-			return hexString.toString();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-			return "";
-		}
-
-	}
-
 	public void bind(final BaseAdapter adapter, final ImageView imageView,
 			final String url) {
 		imageView.setImageBitmap(null);
@@ -137,9 +118,10 @@ public class ImageLoader {
 		bitm = mStorage.get(url);
 		if (bitm != null) {
 			imageView.setImageBitmap(bitm);
+			return;
 		} else {
-			if (mQueue.size() > 10) {
-				trimQueue();
+			if (mQueue.size() > 4) {
+				mQueue.clear();
 			}
 			mQueue.add(0, new Callback() {
 
@@ -167,9 +149,10 @@ public class ImageLoader {
 			imageView.setImageBitmap(bitm);
 			paramCallback.onSuccess(null);
 		} else {
-			if (mQueue.size() > 10) {
-				trimQueue();
-			}
+			/*
+			 * if (mQueue.size() > 10) { trimQueue(); }
+			 */
+			mQueue.clear();
 			mQueue.add(0, new Callback() {
 
 				public void onSuccess(Bitmap bm) {
@@ -227,6 +210,7 @@ public class ImageLoader {
 	}
 
 	private void proceed() {
+		Log.w("ImageLoader Queue size", "Queue Size = " + mQueue.size());
 		if (mNumberOnExecute > 30) {
 			if (mQueue.size() > 2)
 				mQueue.remove(mQueue.size() - 1);
@@ -240,7 +224,7 @@ public class ImageLoader {
 	}
 
 	private void putBitmapToCache(Bitmap b, String url) {
-		File cacheFile = new File(mCacheDir, md5(url));
+		File cacheFile = new File(mCacheDir, Md5.convert(url));
 		try {
 			mStorage.put(url, b);
 			FileOutputStream fos = new FileOutputStream(cacheFile);
@@ -256,7 +240,7 @@ public class ImageLoader {
 		if (TextUtils.isEmpty(url)) {
 			return null;
 		}
-		File cacheFile = new File(mCacheDir, md5(url));
+		File cacheFile = new File(mCacheDir, Md5.convert(url));
 		FileInputStream fis = null;
 		try {
 			if (cacheFile.exists()) {
