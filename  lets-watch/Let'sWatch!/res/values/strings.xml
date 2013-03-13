@@ -26,6 +26,9 @@
     <!-- Adapter -->
     <string name="view_holder">VIEW_HOLDER</string>
     
+    <!-- Adapters layout-->
+    <string name="cast">Cast</string>
+    
     
 
 </resources>

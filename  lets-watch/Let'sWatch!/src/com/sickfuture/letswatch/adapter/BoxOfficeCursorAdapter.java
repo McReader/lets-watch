@@ -42,12 +42,11 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 		if (convertView == null) {
 			view = newView(mContext, mCursor, parent);
 			ViewHolder holder = new ViewHolder();
-			holder.mTitleTextView = (TextView) view.findViewById(R.id.upcoming_title_text_view);
-			holder.mCriticsConsensusTextView = (TextView) view.findViewById(R.id.upcoming_synopsis_text_view);
-			holder.mReleaseDateTextView = (TextView) view.findViewById(R.id.upcoming_release_date_text_view);
-			holder.mMPAATextView = (TextView) view.findViewById(R.id.upcoming_mpaa_text_view);
-			holder.mCastTextView = (TextView) view.findViewById(R.id.upcoming_cast_text_view);
-			holder.mPosterImageView = (ImageView) view.findViewById(R.id.upcoming_poster_image_view);
+			holder.mTitleTextView = (TextView) view.findViewById(R.id.box_office_title_text_view);
+			holder.mCriticsConsensusTextView = (TextView) view.findViewById(R.id.box_office_synopsis_text_view);
+			holder.mMPAATextView = (TextView) view.findViewById(R.id.box_office_mpaa_text_view);
+			holder.mCastTextView = (TextView) view.findViewById(R.id.box_office_cast_text_view);
+			holder.mPosterImageView = (ImageView) view.findViewById(R.id.box_office_poster_image_view);
 			view.setTag(R.string.view_holder, holder);
 		} else {
 			view = convertView;
@@ -59,7 +58,6 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 	@Override
 	public void bindView(View view, final Context context, final Cursor cursor) {
 		ViewHolder holder = (ViewHolder) view.getTag(R.string.view_holder);
-		holder.mReleaseDateTextView.setVisibility(View.INVISIBLE);
 		final String posterUrl = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS_PROFILE));
 		final String orinalUrl = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS_ORIGINAL));
 		if (!TextUtils.isEmpty(posterUrl)) {
@@ -85,18 +83,19 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 			holder.mCriticsConsensusTextView
 					.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.SYNOPSIS)));
 		}
+		holder.mMPAATextView.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.MPAA)));
 	}
 
 	@Override
 	public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-		View view = View.inflate(context, R.layout.adapter_upcoming, null);
+		View view = View.inflate(context, R.layout.adapter_box_office, null);
 		return view;
 	}
 
 	// ViewHolder pattern implementation class
 	static class ViewHolder {
 		
-		TextView mTitleTextView, mCriticsConsensusTextView, mMPAATextView, mReleaseDateTextView, mCastTextView;
+		TextView mTitleTextView, mCriticsConsensusTextView, mMPAATextView, mCastTextView;
 
 		ImageView mPosterImageView;
 	}

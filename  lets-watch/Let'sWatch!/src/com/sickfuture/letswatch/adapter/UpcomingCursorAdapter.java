@@ -79,7 +79,6 @@ public class UpcomingCursorAdapter extends CursorAdapter {
 		holder.mMPAATextView.setText(cursor.getString(cursor.getColumnIndex(Contract.UpcomingColumns.MPAA)));
 		holder.mReleaseDateTextView.setText(cursor.getString(cursor.getColumnIndex(Contract.UpcomingColumns.RELEASE_DATE_THEATER)));
 		String cast = cursor.getString(cursor.getColumnIndex(Contract.UpcomingColumns.CAST_IDS));
-		Log.d(LOG_TAG, cast);
 		holder.mCastTextView.setText(cast);
 	}
 
