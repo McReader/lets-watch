@@ -214,8 +214,8 @@ public abstract class CustomExecutorAsyncTask<Params, Progress, Result> {
 		Params[] mParams;
 	}
 
-	@SuppressWarnings({ "RawUseOfParameterizedType" })
 	private static class AsyncTaskResult<Data> {
+		@SuppressWarnings("rawtypes")
 		final CustomExecutorAsyncTask mTask;
 		final Data[] mData;
 

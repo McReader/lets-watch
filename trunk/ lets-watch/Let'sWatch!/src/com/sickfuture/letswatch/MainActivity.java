@@ -14,11 +14,13 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.sickfuture.letswatch.fragments.BoxOfficeFragment;
 import com.sickfuture.letswatch.fragments.UpcomingFragment;
 
-public class MainActivity extends SherlockFragmentActivity implements ActionBar.TabListener{
+public class MainActivity extends SherlockFragmentActivity implements
+		ActionBar.TabListener {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
-	
+
 	ViewPager mViewPager;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,13 +28,14 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 		setContentView(R.layout.activity_main);
 		final ActionBar actBar = getSupportActionBar();
 		actBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
-		
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
 
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+		mViewPager
+				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
 						actBar.setSelectedNavigationItem(position);
@@ -61,14 +64,14 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 	public void onTabUnselected(Tab tab,
 			android.support.v4.app.FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void onTabReselected(Tab tab,
 			android.support.v4.app.FragmentTransaction ft) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -90,7 +93,6 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 
 			}
 			return null;
-			
 		}
 
 		@Override
@@ -107,10 +109,10 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 				return getString(R.string.title_box_office).toUpperCase(l);
 			case 1:
 				return getString(R.string.title_upcoming).toUpperCase(l);
-			
+
 			}
 			return null;
 		}
 	}
-	
+
 }

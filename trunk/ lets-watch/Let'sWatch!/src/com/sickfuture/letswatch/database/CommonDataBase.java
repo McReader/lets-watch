@@ -39,7 +39,7 @@ public class CommonDataBase extends SQLiteOpenHelper {
 
 	private final static int DB_VERSION = 3;
 
-	private static SQLiteDatabase mDatabase;
+	private SQLiteDatabase mDatabase;
 
 	private static volatile CommonDataBase instance;
 
@@ -142,7 +142,7 @@ public class CommonDataBase extends SQLiteOpenHelper {
 		} finally {
 			db.endTransaction();
 		}
-		}
+	  }
 	}
 
 	@Override
@@ -196,7 +196,7 @@ public class CommonDataBase extends SQLiteOpenHelper {
 		return cursor;
 	}
 
-	protected static void delete(String tableName, String where,
+	public void deleteTable(String tableName, String where,
 			String[] whereArgs) {
 		if (isTableExists(mDatabase, tableName)) {
 			mDatabase.delete(tableName, where, whereArgs);

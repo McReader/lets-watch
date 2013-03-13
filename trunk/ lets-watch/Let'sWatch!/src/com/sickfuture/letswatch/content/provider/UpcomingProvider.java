@@ -34,7 +34,7 @@ public class UpcomingProvider extends CommonProvider {
 	}
 
 	@Override
-	protected String[] getColoumns() {
+	protected String[] getColumns() {
 		return Contract.UpcomingColumns.COLUMNS;
 	}
 

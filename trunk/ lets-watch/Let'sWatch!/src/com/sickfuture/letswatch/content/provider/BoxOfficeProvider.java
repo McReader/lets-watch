@@ -34,7 +34,7 @@ public class BoxOfficeProvider extends CommonProvider {
 	}
 
 	@Override
-	protected String[] getColoumns() {
+	protected String[] getColumns() {
 		return Contract.BoxOfficeColumns.COLUMNS;
 	}
 
