@@ -58,6 +58,7 @@ public class UpcomingFragment extends SherlockFragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_upcoming, null);
 		mViewLoading = inflater.inflate(R.layout.view_loading, null);
+		hideViewLoading(true);
 		mListViewUpcoming = (PullToRefreshListView) rootView.findViewById(R.id.upcoming_pull_refresh_list);
 		mListViewUpcoming.setOnScrollListener(this);
 		mBroadcastReceiver = new BroadcastReceiver() {
@@ -139,10 +140,10 @@ public class UpcomingFragment extends SherlockFragment implements
 	public void onScroll(AbsListView view, int firstVisibleItem,
 			int visibleItemCount, int totalItemCount) {
 		if (visibleItemCount > 0
-				&& firstVisibleItem + visibleItemCount + 3 >= totalItemCount) {
+				&& firstVisibleItem + visibleItemCount + 3 >= totalItemCount 
+				&& InetChecker.checkInetConnection(getSherlockActivity(), false)) {
 			if (!mLoading) {
 				Log.d(LOG_TAG, "onScroll load");
-				
 				mPreferences = getSherlockActivity().getSharedPreferences(getString(PAGINATION), Context.MODE_PRIVATE);
 				String nextPage = mPreferences.getString(UpcomingService.NEXT_UPCOMING, null);
 				if (!TextUtils.isEmpty(nextPage)) {
