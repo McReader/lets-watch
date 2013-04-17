@@ -27,7 +27,7 @@ import android.util.Log;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.sickfuture.letswatch.ContextHolder;
+import com.sickfuture.letswatch.app.ContextHolder;
 import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.task.CustomExecutorAsyncTask;
 import com.sickfuture.letswatch.task.ParamCallback;
