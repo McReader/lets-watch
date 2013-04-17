@@ -1,4 +1,4 @@
-package com.sickfuture.letswatch;
+package com.sickfuture.letswatch.app;
 
 import android.app.Application;
 
