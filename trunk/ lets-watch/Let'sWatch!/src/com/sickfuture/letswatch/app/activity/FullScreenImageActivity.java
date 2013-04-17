@@ -1,4 +1,4 @@
-package com.sickfuture.letswatch;
+package com.sickfuture.letswatch.app.activity;
 
 import android.app.Activity;
 import android.content.Context;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.custom.TouchImageView;
+import com.sickfuture.letswatch.R;
 import com.sickfuture.letswatch.images.ImageLoader;
 import com.sickfuture.letswatch.service.UpcomingService;
 import com.sickfuture.letswatch.task.ParamCallback;
