@@ -12,8 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sickfuture.letswatch.FullScreenImageActivity;
 import com.sickfuture.letswatch.R;
+import com.sickfuture.letswatch.app.activity.FullScreenImageActivity;
 import com.sickfuture.letswatch.content.contract.Contract;
 import com.sickfuture.letswatch.images.ImageLoader;
 

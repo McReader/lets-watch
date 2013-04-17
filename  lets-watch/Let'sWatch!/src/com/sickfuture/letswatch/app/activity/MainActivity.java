@@ -1,4 +1,4 @@
-package com.sickfuture.letswatch;
+package com.sickfuture.letswatch.app.activity;
 
 import java.util.Locale;
 
@@ -11,8 +11,9 @@ import android.support.v4.view.ViewPager;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.sickfuture.letswatch.fragments.BoxOfficeFragment;
-import com.sickfuture.letswatch.fragments.UpcomingFragment;
+import com.sickfuture.letswatch.R;
+import com.sickfuture.letswatch.app.fragment.BoxOfficeFragment;
+import com.sickfuture.letswatch.app.fragment.UpcomingFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements
 		ActionBar.TabListener {
