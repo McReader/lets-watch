@@ -1,15 +1,16 @@
 package com.sickfuture.letswatch.http;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
@@ -24,6 +25,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.message.BasicNameValuePair;
@@ -32,6 +34,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
+import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,7 +46,8 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
-import com.sickfuture.letswatch.app.ContextHolder;
+import com.sickfuture.letswatch.ContextHolder;
+import com.sickfuture.letswatch.utils.Calculate;
 
 public class HttpManager {
 
@@ -97,14 +101,43 @@ public class HttpManager {
 		return localInstance;
 	}
 
-	public Bitmap loadBitmap(String url) throws MalformedURLException,
-			IOException {
+	public Bitmap loadBitmap(String data, int reqWidth, int reqHeight)
+			throws MalformedURLException, IOException {
 		InputStream openStream = null;
+		// TODO convert InputStream to FileInputStream
+		byte[] byteArray = null;
+		Bitmap result = null;
 		try {
-			openStream = new URL(url).openStream();
-			return BitmapFactory.decodeStream(openStream);
+			openStream = loadInputStream(new HttpGet(data));
+			int streamLength = openStream.available();
+			BufferedInputStream bis = new BufferedInputStream(openStream,
+					streamLength);
+			ByteArrayBuffer baf = new ByteArrayBuffer(50);
+			int current = 0;
+			while ((current = bis.read()) != -1) {
+				baf.append((byte) current);
+			}
+			byteArray = baf.toByteArray();
+			// byteArray = new byte[streamLength];
+			// openStream.read(byteArray);
+			BitmapFactory.Options options = new BitmapFactory.Options();
+			options.inJustDecodeBounds = true;
+			BitmapFactory.decodeByteArray(byteArray, 0, streamLength, options);
+			int samplesize = options.inSampleSize = Calculate
+					.calculateInSampleSize(options, reqWidth, reqHeight);
+			Log.d(LOG_TAG, "sample size = " + samplesize);
+			options.inJustDecodeBounds = false;
+			options.inSampleSize = samplesize;
+			result = BitmapFactory.decodeByteArray(byteArray, 0, streamLength,
+					options);
+			int height = options.outHeight;
+			int width = options.outWidth;
+			Log.d(LOG_TAG, "width = " + width + ", " + "height = " + height);
+			return result;
 		} finally {
-			openStream.close();
+			if (openStream != null) {
+				openStream.close();
+			}
 		}
 	}
 
@@ -140,14 +173,6 @@ public class HttpManager {
 
 	private String loadAsString(HttpRequestBase request)
 			throws ClientProtocolException, IOException {
-		/*
-		 * HttpResponse response = mClient.execute(request); if
-		 * (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
-		 * String entityValue = null; entityValue =
-		 * EntityUtils.toString(response.getEntity()); throw new
-		 * IOException(response.getStatusLine().getReasonPhrase() + " " +
-		 * entityValue + " " + response.getStatusLine().getStatusCode()); }
-		 */
 		final InputStream is = loadInputStream(request);
 		BufferedReader rd = null;
 		try {
@@ -162,7 +187,7 @@ public class HttpManager {
 		}
 	}
 
-	private InputStream loadInputStream(HttpRequestBase request)
+	public InputStream loadInputStream(HttpRequestBase request)
 			throws ParseException, IOException {
 		HttpResponse response = mClient.execute(request);
 		if (response.getStatusLine().getStatusCode() != HttpStatus.SC_OK) {
@@ -172,8 +197,29 @@ public class HttpManager {
 					+ " " + entityValue + " "
 					+ response.getStatusLine().getStatusCode());
 		}
-		final InputStream is = new URL(request.getURI().toString())
-				.openStream();
+		/*
+		 * final InputStream is = new URL(request.getURI().toString())
+		 * .openStream();
+		 */
+		// TODO unchecked
+		HttpEntity entity = response.getEntity();
+		BufferedHttpEntity httpEntity = new BufferedHttpEntity(entity);
+		final InputStream is = httpEntity.getContent();
+		// InputStream is = null;
+		// HttpURLConnection connection = null;
+		// try {
+		// URL url = new URL(request.getURI().toString());
+		// connection = (HttpURLConnection) url.openConnection();
+		// connection.setDoInput(true);
+		// connection.connect();
+		// is = connection.getInputStream();
+		// } catch (Exception e) {
+		// e.printStackTrace();
+		// } finally {
+		// if (connection != null) {
+		// connection.disconnect();
+		// }
+		// }
 		return is;
 	}
 
