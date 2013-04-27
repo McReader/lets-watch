@@ -1,9 +1,5 @@
 package com.sickfuture.letswatch.images;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -16,109 +12,67 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import android.app.ActivityManager;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
-import android.support.v4.util.LruCache;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.sickfuture.letswatch.app.ContextHolder;
+import com.sickfuture.letswatch.ContextHolder;
 import com.sickfuture.letswatch.http.HttpManager;
+import com.sickfuture.letswatch.images.cache.ImageCacher;
 import com.sickfuture.letswatch.task.CustomExecutorAsyncTask;
 import com.sickfuture.letswatch.task.ParamCallback;
-import com.sickfuture.letswatch.utils.Md5;
 
 public class ImageLoader {
 
-	private int mNumberOnExecute;
-
-	private static final int CORE_POOL_SIZE = 1;
-
-	private static final int MAXIMUM_POOL_SIZE = 50;
-
-	private static final int KEEP_ALIVE = 10;
-
-	private static final BlockingQueue<Runnable> sWorkQueue = new LinkedBlockingQueue<Runnable>(
-			MAXIMUM_POOL_SIZE);
-
-	private static final ThreadFactory sThreadFactory = new ThreadFactory() {
-		private final AtomicInteger mCount = new AtomicInteger(1);
-
-		public Thread newThread(Runnable r) {
-			return new Thread(r, "ImageAsyncTask #" + mCount.getAndIncrement());
-		}
-	};
-
-	private static final ThreadPoolExecutor mExecutor = new ThreadPoolExecutor(
-			CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE, TimeUnit.SECONDS,
-			sWorkQueue, sThreadFactory);
-
 	private static final String LOG_TAG = "ImageLoader";
 
-	private static volatile ImageLoader instance;
+	private static final int FADE_IN_TIME = 600;
 
-	public static ImageLoader getInstance() {
-		ImageLoader localInstance = instance;
-		if (instance == null) {
-			synchronized (ImageLoader.class) {
-				localInstance = instance;
-				if (localInstance == null) {
-					instance = localInstance = new ImageLoader();
-				}
-			}
-		}
-		return localInstance;
-	}
+	private static ImageLoader instance;
+
+	private Resources mResources;
+
+	private ImageCacher mImageCacher;
+
+	private Context mContext = ContextHolder.getInstance().getContext();
+
+	private final Object mPauseWorkLock = new Object();
+	private boolean mPauseWork = false;
 
 	private List<Callback> mQueue;
 
-	private LruCache<String, Bitmap> mStorage;
+	protected int mNumberOnExecute;
 
-	private File mCacheDir;
+	private boolean mFadeInBitmap = true;
 
-	private final int memClass = ((ActivityManager) ContextHolder.getInstance()
-			.getContext().getSystemService(Context.ACTIVITY_SERVICE))
-			.getMemoryClass();
-
-	private final int cacheSize = 1024 * 1024 * memClass / 4;
+	public static ImageLoader getInstance() {
+		if (instance == null) {
+			instance = new ImageLoader();
+		}
+		return instance;
+	}
 
 	private ImageLoader() {
 		mQueue = Collections.synchronizedList(new ArrayList<Callback>());
-		mStorage = new LruCache<String, Bitmap>(cacheSize) {
-			@Override
-			protected int sizeOf(String key, Bitmap value) {
-				return value.getRowBytes() * value.getHeight();
-			}
-
-			@Override
-			protected void entryRemoved(boolean evicted, String key,
-					Bitmap oldValue, Bitmap newValue) {
-				super.entryRemoved(evicted, key, oldValue, newValue);
-				if (evicted) {
-					oldValue.recycle();
-					Log.d(LOG_TAG, "recycle");
-					System.gc();
-					oldValue = null;
-				}
-			}
-		};
-		mCacheDir = ContextHolder.getInstance().getContext().getCacheDir();
-		mNumberOnExecute = 0;
+		mImageCacher = ImageCacher.getInstance();
+		mResources = mContext.getResources();
 	}
 
 	public void bind(final BaseAdapter adapter, final ImageView imageView,
-			final String url) {
-		imageView.setImageBitmap(null);
+			final String url, boolean cacheOnDiskMemory) {
+		// imageView.setImageBitmap(null);
 		Bitmap bitm = null;
-		bitm = mStorage.get(url);
+		bitm = mImageCacher.getBitmapFromMemoryCache(url);
 		if (bitm != null) {
-			imageView.setImageBitmap(bitm);
-			return;
+			setImageDrawable(imageView, bitm);
 		} else {
 			if (mQueue.size() > 4) {
 				mQueue.clear();
@@ -137,26 +91,22 @@ public class ImageLoader {
 				}
 			});
 		}
-		proceed();
+		proceed(imageView, cacheOnDiskMemory);
 	}
 
 	public void bind(final ImageView imageView, final String url,
 			final ParamCallback<Void> paramCallback) {
-		// imageView.setImageBitmap(null);
 		Bitmap bitm = null;
-		bitm = mStorage.get(url);
+		bitm = mImageCacher.getBitmapFromMemoryCache(url);
 		if (bitm != null) {
-			imageView.setImageBitmap(bitm);
+			setImageDrawable(imageView, bitm);
 			paramCallback.onSuccess(null);
 		} else {
-			/*
-			 * if (mQueue.size() > 10) { trimQueue(); }
-			 */
 			mQueue.clear();
 			mQueue.add(0, new Callback() {
 
 				public void onSuccess(Bitmap bm) {
-					imageView.setImageBitmap(bm);
+					setImageDrawable(imageView, bm);
 					paramCallback.onSuccess(null);
 				}
 
@@ -169,36 +119,29 @@ public class ImageLoader {
 				}
 			});
 		}
-		proceed();
+		// TODO do param for cache
+		proceed(imageView, false);
 	}
 
-	private void trimQueue() {
-		while (mQueue.size() > 10) {
-			mQueue.remove(mQueue.size() - 1);
-		}
-	}
-
-	public void bind(final ImageView imageView, final String url) {
+	public void bind(final ImageView imageView, final String url,
+			boolean cacheOnDiskMemory) {
 		imageView.setImageBitmap(null);
 		Bitmap bitm = null;
-		if (mStorage.get(url) != null) {
-			bitm = mStorage.get(url);
-		}
+		bitm = mImageCacher.getBitmapFromMemoryCache(url);
 		if (bitm != null) {
-			imageView.setImageBitmap(bitm);
+			setImageDrawable(imageView, bitm);
 		} else {
-			if (mQueue.size() > 10) {
-				trimQueue();
-			}
 			mQueue.add(0, new Callback() {
 
 				public void onSuccess(Bitmap bm) {
+					Log.d(LOG_TAG, "ONSUCCESS");
 					imageView.setImageBitmap(bm);
 				}
 
 				public void onError(Exception e) {
+					Log.d(LOG_TAG, "ONERRor");
 					imageView
-							.setImageResource(android.R.drawable.alert_dark_frame);
+							.setImageResource(android.R.drawable.btn_star_big_on);
 				}
 
 				public String getUrl() {
@@ -206,12 +149,11 @@ public class ImageLoader {
 				}
 			});
 		}
-		proceed();
+		proceed(imageView, cacheOnDiskMemory);
 	}
 
-	private void proceed() {
-		Log.w("ImageLoader Queue size", "Queue Size = " + mQueue.size());
-		if (mNumberOnExecute > 30) {
+	private void proceed(ImageView imageView, boolean cacheOnDiskMemory) {
+		if (mNumberOnExecute > 5) {
 			if (mQueue.size() > 2)
 				mQueue.remove(mQueue.size() - 1);
 			return;
@@ -219,56 +161,93 @@ public class ImageLoader {
 		if (mQueue.isEmpty()) {
 			return;
 		}
+		imageView.setImageBitmap(null);
 		final Callback callback = mQueue.remove(0);
-		new ImageTask().execute(mExecutor, callback);
+		new ImageLoaderTask(callback, imageView, cacheOnDiskMemory).start();
 	}
 
-	private void putBitmapToCache(Bitmap b, String url) {
-		File cacheFile = new File(mCacheDir, Md5.convert(url));
-		try {
-			mStorage.put(url, b);
-			FileOutputStream fos = new FileOutputStream(cacheFile);
-			b.compress(CompressFormat.JPEG, 100, fos);
-			fos.flush();
-			fos.close();
-		} catch (Exception e) {
-			Log.e(LOG_TAG, "Error when saving image to cache. ", e);
-		}
-	}
-
-	private Bitmap getBitmapFromFileCache(String url) {
-		if (TextUtils.isEmpty(url)) {
-			return null;
-		}
-		File cacheFile = new File(mCacheDir, Md5.convert(url));
-		FileInputStream fis = null;
-		try {
-			if (cacheFile.exists()) {
-				fis = new FileInputStream(cacheFile);
-				return BitmapFactory.decodeStream(fis);
-			}
-		} catch (FileNotFoundException e) {
-			Log.e(LOG_TAG, "Error when saving image to cache. ", e);
-			// ignored because not cached yet
-			return null;
-		} finally {
-			if (fis != null) {
-				try {
-					fis.close();
-				} catch (IOException e) {
-					// ignored if already closed
-				}
+	/**
+	 * Pause any ongoing background work. This can be used as a temporary
+	 * measure to improve performance. For example background work could be
+	 * paused when a ListView or GridView is being scrolled using a
+	 * {@link android.widget.AbsListView.OnScrollListener} to keep scrolling
+	 * smooth.
+	 * <p>
+	 * If work is paused, be sure setPauseWork(false) is called again before
+	 * your fragment or activity is destroyed (for example during
+	 * {@link android.app.Activity#onPause()}), or there is a risk the
+	 * background thread will never finish.
+	 */
+	public void setPauseWork(boolean pauseWork) {
+		synchronized (mPauseWorkLock) {
+			mQueue.clear();
+			mPauseWork = pauseWork;
+			if (!mPauseWork) {
+				mPauseWorkLock.notifyAll();
 			}
 		}
-		return null;
 	}
 
-	private class ImageTask extends
+	private void setImageDrawable(final ImageView imageView, final Bitmap bitmap) {
+		BitmapDrawable drawable = new BitmapDrawable(mResources, bitmap);
+		if (mFadeInBitmap && imageView.getDrawable() == null) {
+			imageView.setImageDrawable(null);
+			final TransitionDrawable transitionDrawable = new TransitionDrawable(
+					new Drawable[] {
+							new ColorDrawable(android.R.color.transparent),
+							drawable });
+			imageView.setImageDrawable(transitionDrawable);
+			transitionDrawable.startTransition(FADE_IN_TIME);
+		} else {
+			imageView.setImageDrawable(null);
+			imageView.setImageDrawable(drawable);
+		}
+	}
+
+	public class ImageLoaderTask extends
 			CustomExecutorAsyncTask<Callback, Void, Object> {
+		private static final int CORE_POOL_SIZE = 3;
+
+		private static final int MAXIMUM_POOL_SIZE = 15;
+
+		private static final int KEEP_ALIVE = 5;
+
+		private final BlockingQueue<Runnable> sWorkQueue = new LinkedBlockingQueue<Runnable>(
+				MAXIMUM_POOL_SIZE);
+
+		private final ThreadFactory sThreadFactory = new ThreadFactory() {
+			private final AtomicInteger mCount = new AtomicInteger(1);
+
+			public Thread newThread(Runnable r) {
+				return new Thread(r, "ImageAsyncTask #"
+						+ mCount.getAndIncrement());
+			}
+		};
+
+		private final ThreadPoolExecutor mExecutor = new ThreadPoolExecutor(
+				CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+				TimeUnit.SECONDS, sWorkQueue, sThreadFactory);
 
 		private Callback mCallback;
 
-		public ImageTask() {
+		private final Object mPauseWorkLock = new Object();
+		private boolean mPauseWork = false;
+
+		private ImageCacher mImageCacher = ImageCacher.getInstance();
+
+		private ImageView mImageView;
+
+		private boolean mCacheOnDiskMemory;
+
+		public ImageLoaderTask(Callback callback, ImageView imageView,
+				boolean doCache) {
+			mCallback = callback;
+			mImageView = imageView;
+			mCacheOnDiskMemory = doCache;
+		}
+
+		public void start() {
+			execute(mExecutor, mCallback);
 		}
 
 		@Override
@@ -277,39 +256,54 @@ public class ImageLoader {
 				return new IllegalArgumentException();
 			}
 			mCallback = params[0];
-			try {
-				Bitmap bitmap = getBitmapFromFileCache(params[0].getUrl());
-				if (bitmap != null) {
-					if (mStorage.get(params[0].getUrl()) == null) {
-						mStorage.put(params[0].getUrl(), bitmap);
+			synchronized (mPauseWorkLock) {
+				while (mPauseWork && !isCancelled()) {
+					try {
+						mPauseWorkLock.wait();
+					} catch (InterruptedException e) {
+						return e;
 					}
+				}
+			}
+			Bitmap bitmap = null;
+			try {
+				bitmap = mImageCacher
+						.getBitmapFromFileCache(params[0].getUrl());
+				if (bitmap != null) {
+					mImageCacher.putBitmapToMemoryCache(params[0].getUrl(),
+							bitmap);
+				}
+				if (bitmap != null) {
 					return bitmap;
 				}
 				try {
 					if (HttpManager.getInstance().isAvalibleInetConnection()) {
 						bitmap = HttpManager.getInstance().loadBitmap(
-								params[0].getUrl());
+								params[0].getUrl(), 1024, 1024);
 					}
 					if (bitmap != null) {
-						putBitmapToCache(bitmap, params[0].getUrl());
+						mImageCacher.putBitmapToCache(params[0].getUrl(),
+								bitmap, mCacheOnDiskMemory);
 					}
-					return bitmap;
 				} catch (MalformedURLException e) {
 					return e;
 				}
 			} catch (IOException e) {
 				return e;
 			}
+			return bitmap;
 		}
 
 		@Override
 		protected void onPreExecute() {
 			mNumberOnExecute++;
+			mImageView.setImageDrawable(null);
 		}
 
 		@Override
 		protected void onPostExecute(Object result) {
 			if (result instanceof Bitmap) {
+				// setImageDrawable(mImageView, (Bitmap) result);
 				mCallback.onSuccess((Bitmap) result);
 			}
 			if (result instanceof Exception) {
@@ -317,6 +311,6 @@ public class ImageLoader {
 			}
 			mNumberOnExecute--;
 		}
-
 	}
+
 }
