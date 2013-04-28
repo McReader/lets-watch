@@ -28,13 +28,13 @@
             </intent-filter>
         </activity>
         <activity android:name="com.sickfuture.letswatch.app.activity.FullScreenImageActivity" />
-
+		<activity android:name="com.sickfuture.letswatch.app.activity.MovieDetailsActivity"></activity>
         <service android:name="com.sickfuture.letswatch.service.BoxOfficeService" >
         </service>
         <service android:name="com.sickfuture.letswatch.service.UpcomingService" >
         </service>
 
-        <provider
+        <!-- <provider
             android:name="com.sickfuture.letswatch.content.provider.UpcomingProvider"
             android:authorities="com.sickfuture.letswatch.content.provider.UpcomingProvider"
             android:exported="false" >
@@ -42,6 +42,11 @@
         <provider
             android:name="com.sickfuture.letswatch.content.provider.BoxOfficeProvider"
             android:authorities="com.sickfuture.letswatch.content.provider.BoxOfficeProvider"
+            android:exported="false" >
+        </provider> -->
+        <provider
+            android:name="com.sickfuture.letswatch.content.provider.MoviesProvider"
+            android:authorities="com.sickfuture.letswatch.content.provider.MoviesProvider"
             android:exported="false" >
         </provider>
     </application>

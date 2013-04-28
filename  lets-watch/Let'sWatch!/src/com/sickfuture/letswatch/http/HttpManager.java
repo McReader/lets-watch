@@ -44,7 +44,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.util.Log;
 
-import com.sickfuture.letswatch.ContextHolder;
+import com.sickfuture.letswatch.app.ContextHolder;
 import com.sickfuture.letswatch.utils.Calculate;
 
 public class HttpManager {

@@ -37,7 +37,7 @@ public class CommonDataBase extends SQLiteOpenHelper {
 
 	private static final String DROP_TABLE = "DROP TABLE IF EXISTS ";
 
-	private final static int DB_VERSION = 3;
+	private final static int DB_VERSION = 1;
 
 	private SQLiteDatabase mDatabase;
 

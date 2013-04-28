@@ -1,5 +1,6 @@
 package com.sickfuture.letswatch.bo;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.sickfuture.letswatch.bo.common.JSONModel;
@@ -15,109 +16,109 @@ public class UpcomingObject extends JSONModel {
 
 
 	@Override
-	public String getId() {
+	public String getId() throws JSONException {
 		return super.getId();
 	}
 
 
 	@Override
-	public String getTitle() {
+	public String getTitle() throws JSONException {
 		return super.getTitle();
 	}
 
 
 	@Override
-	public String getYear() {
+	public String getYear() throws JSONException {
 		return super.getYear();
 	}
 
 
 	@Override
-	public String getMpaa() {
+	public String getMpaa() throws JSONException {
 		return super.getMpaa();
 	}
 
 
 	@Override
-	public String getRuntime() {
+	public String getRuntime() throws JSONException {
 		return super.getRuntime();
 	}
 
 
 	@Override
-	public String getReleaseDateTheater() {
+	public String getReleaseDateTheater() throws JSONException {
 		return super.getReleaseDateTheater();
 	}
 
 
 	@Override
-	public String getRatingCritics() {
+	public String getRatingCritics() throws JSONException {
 		return super.getRatingCritics();
 	}
 
 
 	@Override
-	public String getRatingCriticsScore() {
+	public String getRatingCriticsScore() throws JSONException {
 		return super.getRatingCriticsScore();
 	}
 
 
 	@Override
-	public String getRatingAudienceScore() {
+	public String getRatingAudienceScore() throws JSONException {
 		return super.getRatingAudienceScore();
 	}
 
 
 	@Override
-	public String getSynopsis() {
+	public String getSynopsis() throws JSONException {
 		return super.getSynopsis();
 	}
 
 
 	@Override
-	public String getActorsString() {
+	public String getActorsString() throws JSONException {
 		return super.getActorsString();
 	}
 
 
 	@Override
-	public String getAlternateIds() {
+	public String getAlternateIds() throws JSONException {
 		return super.getAlternateIds();
 	}
 
 
 	@Override
-	public String getLinkSelf() {
+	public String getLinkSelf() throws JSONException {
 		return super.getLinkSelf();
 	}
 
 
 	@Override
-	public String getLinkAlternate() {
+	public String getLinkAlternate() throws JSONException {
 		return super.getLinkAlternate();
 	}
 
 
 	@Override
-	public String getLinkCast() {
+	public String getLinkCast() throws JSONException {
 		return super.getLinkCast();
 	}
 
 
 	@Override
-	public String getLinkClips() {
+	public String getLinkClips() throws JSONException {
 		return super.getLinkClips();
 	}
 
 
 	@Override
-	public String getLinkReviews() {
+	public String getLinkReviews() throws JSONException {
 		return super.getLinkReviews();
 	}
 
 
 	@Override
-	public String getLinkSimilar() {
+	public String getLinkSimilar() throws JSONException {
 		return super.getLinkSimilar();
 	}
 
