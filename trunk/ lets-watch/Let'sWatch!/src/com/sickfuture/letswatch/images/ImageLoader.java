@@ -28,7 +28,6 @@ import com.sickfuture.letswatch.ContextHolder;
 import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.images.cache.ImageCacher;
 import com.sickfuture.letswatch.task.CustomExecutorAsyncTask;
-import com.sickfuture.letswatch.task.ParamCallback;
 
 public class ImageLoader {
 
@@ -53,11 +52,19 @@ public class ImageLoader {
 
 	private boolean mFadeInBitmap = true;
 
+	private Bitmap mloadingBitmap = null;
+
 	public static ImageLoader getInstance() {
+		ImageLoader localInstance = instance;
 		if (instance == null) {
-			instance = new ImageLoader();
+			synchronized (ImageLoader.class) {
+				localInstance = instance;
+				if (localInstance == null) {
+					instance = localInstance = new ImageLoader();
+				}
+			}
 		}
-		return instance;
+		return localInstance;
 	}
 
 	private ImageLoader() {
@@ -68,7 +75,6 @@ public class ImageLoader {
 
 	public void bind(final BaseAdapter adapter, final ImageView imageView,
 			final String url, boolean cacheOnDiskMemory) {
-		// imageView.setImageBitmap(null);
 		Bitmap bitm = null;
 		bitm = mImageCacher.getBitmapFromMemoryCache(url);
 		if (bitm != null) {
@@ -94,34 +100,34 @@ public class ImageLoader {
 		proceed(imageView, cacheOnDiskMemory);
 	}
 
-	public void bind(final ImageView imageView, final String url,
-			final ParamCallback<Void> paramCallback) {
-		Bitmap bitm = null;
-		bitm = mImageCacher.getBitmapFromMemoryCache(url);
-		if (bitm != null) {
-			setImageDrawable(imageView, bitm);
-			paramCallback.onSuccess(null);
-		} else {
-			mQueue.clear();
-			mQueue.add(0, new Callback() {
-
-				public void onSuccess(Bitmap bm) {
-					setImageDrawable(imageView, bm);
-					paramCallback.onSuccess(null);
-				}
-
-				public void onError(Exception e) {
-					paramCallback.onError(e);
-				}
-
-				public String getUrl() {
-					return url;
-				}
-			});
-		}
-		// TODO do param for cache
-		proceed(imageView, false);
-	}
+	// public void bind(final ImageView imageView, final String url,
+	// final ParamCallback<Void> paramCallback) {
+	// Bitmap bitm = null;
+	// bitm = mImageCacher.getBitmapFromMemoryCache(url);
+	// if (bitm != null) {
+	// setImageDrawable(imageView, bitm);
+	// paramCallback.onSuccess(null);
+	// } else {
+	// mQueue.clear();
+	// mQueue.add(0, new Callback() {
+	//
+	// public void onSuccess(Bitmap bm) {
+	// setImageDrawable(imageView, bm);
+	// paramCallback.onSuccess(null);
+	// }
+	//
+	// public void onError(Exception e) {
+	// paramCallback.onError(e);
+	// }
+	//
+	// public String getUrl() {
+	// return url;
+	// }
+	// });
+	// }
+	// // TODO do param for cache
+	// proceed(imageView, false);
+	// }
 
 	public void bind(final ImageView imageView, final String url,
 			boolean cacheOnDiskMemory) {
@@ -161,9 +167,14 @@ public class ImageLoader {
 		if (mQueue.isEmpty()) {
 			return;
 		}
-		imageView.setImageBitmap(null);
+		imageView.setImageBitmap(mloadingBitmap);
 		final Callback callback = mQueue.remove(0);
 		new ImageLoaderTask(callback, imageView, cacheOnDiskMemory).start();
+	}
+
+	public void setLoadingBitmap(Bitmap loadingBitmap) {
+		mloadingBitmap = loadingBitmap;
+		Drawable drawable = null;
 	}
 
 	/**
@@ -279,7 +290,7 @@ public class ImageLoader {
 				try {
 					if (HttpManager.getInstance().isAvalibleInetConnection()) {
 						bitmap = HttpManager.getInstance().loadBitmap(
-								params[0].getUrl(), 1024, 1024);
+								params[0].getUrl(), 500, 500);
 					}
 					if (bitmap != null) {
 						mImageCacher.putBitmapToCache(params[0].getUrl(),

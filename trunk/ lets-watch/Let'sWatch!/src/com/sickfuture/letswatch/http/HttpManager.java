@@ -1,6 +1,5 @@
 package com.sickfuture.letswatch.http;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,7 +33,6 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
-import org.apache.http.util.ByteArrayBuffer;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -104,35 +102,29 @@ public class HttpManager {
 	public Bitmap loadBitmap(String data, int reqWidth, int reqHeight)
 			throws MalformedURLException, IOException {
 		InputStream openStream = null;
-		// TODO convert InputStream to FileInputStream
 		byte[] byteArray = null;
 		Bitmap result = null;
 		try {
 			openStream = loadInputStream(new HttpGet(data));
 			int streamLength = openStream.available();
-			BufferedInputStream bis = new BufferedInputStream(openStream,
-					streamLength);
-			ByteArrayBuffer baf = new ByteArrayBuffer(50);
-			int current = 0;
-			while ((current = bis.read()) != -1) {
-				baf.append((byte) current);
-			}
-			byteArray = baf.toByteArray();
-			// byteArray = new byte[streamLength];
-			// openStream.read(byteArray);
+			byteArray = new byte[streamLength];
+			openStream.read(byteArray);
 			BitmapFactory.Options options = new BitmapFactory.Options();
 			options.inJustDecodeBounds = true;
 			BitmapFactory.decodeByteArray(byteArray, 0, streamLength, options);
-			int samplesize = options.inSampleSize = Calculate
-					.calculateInSampleSize(options, reqWidth, reqHeight);
-			Log.d(LOG_TAG, "sample size = " + samplesize);
+			Log.d(LOG_TAG, "input width = " + options.outWidth + ", "
+					+ "input height = " + options.outHeight);
+			int sampleSize = Calculate.calculateInSampleSize(options, reqWidth,
+					reqHeight);
+			Log.d(LOG_TAG, "sample size = " + sampleSize);
 			options.inJustDecodeBounds = false;
-			options.inSampleSize = samplesize;
+			options.inSampleSize = sampleSize;
 			result = BitmapFactory.decodeByteArray(byteArray, 0, streamLength,
 					options);
-			int height = options.outHeight;
-			int width = options.outWidth;
-			Log.d(LOG_TAG, "width = " + width + ", " + "height = " + height);
+			int height = result.getHeight();
+			int width = result.getWidth();
+			Log.d(LOG_TAG, "output width = " + width + ", "
+					+ "output height = " + height);
 			return result;
 		} finally {
 			if (openStream != null) {
@@ -197,29 +189,10 @@ public class HttpManager {
 					+ " " + entityValue + " "
 					+ response.getStatusLine().getStatusCode());
 		}
-		/*
-		 * final InputStream is = new URL(request.getURI().toString())
-		 * .openStream();
-		 */
 		// TODO unchecked
 		HttpEntity entity = response.getEntity();
 		BufferedHttpEntity httpEntity = new BufferedHttpEntity(entity);
 		final InputStream is = httpEntity.getContent();
-		// InputStream is = null;
-		// HttpURLConnection connection = null;
-		// try {
-		// URL url = new URL(request.getURI().toString());
-		// connection = (HttpURLConnection) url.openConnection();
-		// connection.setDoInput(true);
-		// connection.connect();
-		// is = connection.getInputStream();
-		// } catch (Exception e) {
-		// e.printStackTrace();
-		// } finally {
-		// if (connection != null) {
-		// connection.disconnect();
-		// }
-		// }
 		return is;
 	}
 
