@@ -5,9 +5,44 @@ import org.json.JSONObject;
 
 import com.sickfuture.letswatch.bo.common.JSONModel;
 
-public class BoxOfficeObject extends JSONModel {
+public class MovieObject extends JSONModel {
 
-	public BoxOfficeObject(JSONObject jsonObject) {
+	@Override
+	public String getReleaseDateDvd() throws JSONException {
+		return super.getReleaseDateDvd();
+	}
+
+	@Override
+	public String getNextLink() throws JSONException {
+		return super.getNextLink();
+	}
+
+	@Override
+	public String getRatingAudience() throws JSONException {
+		return super.getRatingAudience();
+	}
+
+	@Override
+	public String getCriticConsensus() throws JSONException {
+		return super.getCriticConsensus();
+	}
+
+	@Override
+	public String getGenres() throws JSONException {
+		return super.getGenres();
+	}
+
+	@Override
+	public String getDirectors() throws JSONException {
+		return super.getDirectors();
+	}
+
+	@Override
+	public String getStudio() throws JSONException {
+		return super.getStudio();
+	}
+
+	public MovieObject(JSONObject jsonObject) {
 		super(jsonObject);
 	}
 
@@ -106,12 +141,6 @@ public class BoxOfficeObject extends JSONModel {
 		return super.getPosters(posterType);
 	}
 
-	public String getRatingAudience() throws JSONException{
-		return getStringFromObject(RATINGS, AUDIENCE_RATING);
-	}
 	
-	public String getCriticConsensus() throws JSONException {
-		return getString(CRITICS_CONSENSUS);
-	}
-	
+
 }

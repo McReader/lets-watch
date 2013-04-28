@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
-import com.sickfuture.letswatch.R;
 import com.sickfuture.letswatch.content.contract.Contract;
 import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.service.common.CommonService;
@@ -23,6 +22,7 @@ import com.sickfuture.letswatch.task.CommonTask;
 
 public class BoxOfficeService extends CommonService<List<JSONObject>> {
 
+	private static final String MOVIES = "movies";
 	private static final String LOG_TAG = "BoxOfficeService";
 	private List<JSONObject> mList;
 	private String URL;
@@ -50,7 +50,7 @@ public class BoxOfficeService extends CommonService<List<JSONObject>> {
 			public List<JSONObject> convert(Object source) throws Exception {
 				if(source==null) return null;
 				
-				JSONArray jsonArray = ((JSONObject) source).getJSONArray("movies");
+				JSONArray jsonArray = ((JSONObject) source).getJSONArray(MOVIES);
 				if (jsonArray.length() == 0) {
 					return null;
 				}
@@ -65,7 +65,7 @@ public class BoxOfficeService extends CommonService<List<JSONObject>> {
 
 	@Override
 	protected Uri getProviderUri() {
-		return Contract.BoxOfficeColumns.CONTENT_URI;
+		return Contract.MovieColumns.CONTENT_URI;
 	}
 
 	@Override //runs in new thread
@@ -75,7 +75,13 @@ public class BoxOfficeService extends CommonService<List<JSONObject>> {
 		int insertResult = 0;
 		for (int i = 0; i < c.size(); i++) {
 			contentValues[i] = new ContentValues();
-			contentValues[i].put(DATA, c.get(i).toString());
+			JSONObject object = c.get(i);
+			try {
+				object.put(Contract.SECTION, Contract.BOX_OFFICE_SECTION_MARK);
+			} catch (JSONException e) {
+				callbackOnError(e);
+			}
+			contentValues[i].put(DATA, object.toString());
 		}
 		insertResult = getContentResolver().bulkInsert(
 				getProviderUri(), contentValues);

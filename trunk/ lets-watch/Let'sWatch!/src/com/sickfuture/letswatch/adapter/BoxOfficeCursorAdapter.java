@@ -58,8 +58,8 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 	@Override
 	public void bindView(View view, final Context context, final Cursor cursor) {
 		ViewHolder holder = (ViewHolder) view.getTag(R.string.view_holder);
-		final String posterUrl = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS_PROFILE));
-		final String orinalUrl = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.POSTERS_ORIGINAL));
+		final String posterUrl = cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.POSTERS_PROFILE));
+		final String orinalUrl = cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.POSTERS_ORIGINAL));
 		if (!TextUtils.isEmpty(posterUrl)) {
 			holder.mPosterImageView.setOnClickListener(new OnClickListener() {
 				@Override
@@ -71,19 +71,19 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 					return;
 				}
 			});
-			ImageLoader.getInstance().bind(this, holder.mPosterImageView, posterUrl);
+			ImageLoader.getInstance().bind(this, holder.mPosterImageView, posterUrl, true);
 		}
-		holder.mCastTextView.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.CAST_IDS)));
-		holder.mTitleTextView.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.MOVIE_TITLE)));
-		String consensus = cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.CRITICS_CONSENSUS));
+		holder.mCastTextView.setText(cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.CAST_IDS)));
+		holder.mTitleTextView.setText(cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.MOVIE_TITLE)));
+		String consensus = cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.CRITICS_CONSENSUS));
 		if (!TextUtils.isEmpty(consensus)) {
 			holder.mCriticsConsensusTextView.setVisibility(View.VISIBLE);
 			holder.mCriticsConsensusTextView.setText(consensus);
 		} else {
 			holder.mCriticsConsensusTextView
-					.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.SYNOPSIS)));
+					.setText(cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.SYNOPSIS)));
 		}
-		holder.mMPAATextView.setText(cursor.getString(cursor.getColumnIndex(Contract.BoxOfficeColumns.MPAA)));
+		holder.mMPAATextView.setText(cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.MPAA)));
 	}
 
 	@Override

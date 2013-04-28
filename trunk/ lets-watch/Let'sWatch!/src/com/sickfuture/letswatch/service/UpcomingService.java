@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.security.ProviderException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.prefs.Preferences;
 
 import org.apache.http.client.ClientProtocolException;
 import org.json.JSONArray;
@@ -87,7 +86,7 @@ public class UpcomingService extends CommonService<List<JSONObject>> {
 
 	@Override
 	protected Uri getProviderUri() {
-		return Contract.UpcomingColumns.CONTENT_URI;
+		return Contract.MovieColumns.CONTENT_URI;
 	}
 
 	@Override
@@ -96,6 +95,12 @@ public class UpcomingService extends CommonService<List<JSONObject>> {
 		int insertResult = 0;
 		for (int i = 0; i < t.size(); i++) {
 			contentValues[i] = new ContentValues();
+			JSONObject object = t.get(i);
+			try {
+				object.put(Contract.SECTION, Contract.UPCOMING_SECTION_MARK);
+			} catch (JSONException e) {
+				callbackOnError(e);
+			}
 			contentValues[i].put(DATA, t.get(i).toString());
 		}
 		insertResult = getContentResolver().bulkInsert(
