@@ -24,10 +24,11 @@ import android.util.Log;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
-import com.sickfuture.letswatch.ContextHolder;
+import com.sickfuture.letswatch.app.ContextHolder;
 import com.sickfuture.letswatch.http.HttpManager;
 import com.sickfuture.letswatch.images.cache.ImageCacher;
 import com.sickfuture.letswatch.task.CustomExecutorAsyncTask;
+import com.sickfuture.letswatch.task.ParamCallback;
 
 public class ImageLoader {
 
@@ -100,34 +101,34 @@ public class ImageLoader {
 		proceed(imageView, cacheOnDiskMemory);
 	}
 
-	// public void bind(final ImageView imageView, final String url,
-	// final ParamCallback<Void> paramCallback) {
-	// Bitmap bitm = null;
-	// bitm = mImageCacher.getBitmapFromMemoryCache(url);
-	// if (bitm != null) {
-	// setImageDrawable(imageView, bitm);
-	// paramCallback.onSuccess(null);
-	// } else {
-	// mQueue.clear();
-	// mQueue.add(0, new Callback() {
-	//
-	// public void onSuccess(Bitmap bm) {
-	// setImageDrawable(imageView, bm);
-	// paramCallback.onSuccess(null);
-	// }
-	//
-	// public void onError(Exception e) {
-	// paramCallback.onError(e);
-	// }
-	//
-	// public String getUrl() {
-	// return url;
-	// }
-	// });
-	// }
-	// // TODO do param for cache
-	// proceed(imageView, false);
-	// }
+	public void bind(final ImageView imageView, final String url,
+			final ParamCallback<Void> paramCallback) {
+		Bitmap bitm = null;
+		bitm = mImageCacher.getBitmapFromMemoryCache(url);
+		if (bitm != null) {
+			imageView.setImageBitmap(bitm);
+			paramCallback.onSuccess(null);
+		} else {
+			mQueue.clear();
+			mQueue.add(0, new Callback() {
+
+				public void onSuccess(Bitmap bm) {
+					imageView.setImageBitmap(bm);
+					paramCallback.onSuccess(null);
+				}
+
+				public void onError(Exception e) {
+					paramCallback.onError(e);
+				}
+
+				public String getUrl() {
+					return url;
+				}
+			});
+		}
+		// TODO do param for cache
+		proceed(imageView, false);
+	}
 
 	public void bind(final ImageView imageView, final String url,
 			boolean cacheOnDiskMemory) {

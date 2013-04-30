@@ -1,5 +1,7 @@
 package com.sickfuture.letswatch.adapter;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -12,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sickfuture.letswatch.R;
+import com.sickfuture.letswatch.adapter.BoxOfficeCursorAdapter.ViewHolder;
 import com.sickfuture.letswatch.app.activity.FullScreenImageActivity;
 import com.sickfuture.letswatch.content.contract.Contract;
 import com.sickfuture.letswatch.images.ImageLoader;
@@ -47,7 +50,9 @@ public class UpcomingCursorAdapter extends CursorAdapter {
 			holder.mMPAATextView = (TextView) view.findViewById(R.id.upcoming_mpaa_text_view);
 			holder.mCastTextView = (TextView) view.findViewById(R.id.upcoming_cast_text_view);
 			holder.mPosterImageView = (ImageView) view.findViewById(R.id.upcoming_poster_image_view);
-			view.setTag(R.string.view_holder, holder);
+			ArrayList<Object> x = new ArrayList<Object>(1);
+			x.add(holder);
+			view.setTag(x);
 		} else {
 			view = convertView;
 		}
@@ -55,9 +60,11 @@ public class UpcomingCursorAdapter extends CursorAdapter {
 		return view;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void bindView(View view, final Context context, final Cursor cursor) {
-		ViewHolder holder = (ViewHolder) view.getTag(R.string.view_holder);
+		ArrayList<Object> x = (ArrayList<Object>) view.getTag();
+		ViewHolder holder = (ViewHolder) x.get(0);
 		final String poster = cursor.getString(cursor.getColumnIndex(Contract.UpcomingColumns.POSTERS_PROFILE));
 		final String original = cursor.getString(cursor.getColumnIndex(Contract.UpcomingColumns.POSTERS_ORIGINAL));
 		if (!TextUtils.isEmpty(poster)) {

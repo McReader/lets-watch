@@ -1,5 +1,7 @@
 package com.sickfuture.letswatch.adapter;
 
+import java.util.ArrayList;
+
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -47,7 +49,9 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 			holder.mMPAATextView = (TextView) view.findViewById(R.id.box_office_mpaa_text_view);
 			holder.mCastTextView = (TextView) view.findViewById(R.id.box_office_cast_text_view);
 			holder.mPosterImageView = (ImageView) view.findViewById(R.id.box_office_poster_image_view);
-			view.setTag(R.string.view_holder, holder);
+			ArrayList<Object> x = new ArrayList<Object>(1);
+			x.add(holder);
+			view.setTag(x);
 		} else {
 			view = convertView;
 		}
@@ -55,9 +59,11 @@ public class BoxOfficeCursorAdapter extends CursorAdapter {
 		return view;
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void bindView(View view, final Context context, final Cursor cursor) {
-		ViewHolder holder = (ViewHolder) view.getTag(R.string.view_holder);
+		ArrayList<Object> x = (ArrayList<Object>) view.getTag();
+		ViewHolder holder = (ViewHolder) x.get(0);
 		final String posterUrl = cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.POSTERS_PROFILE));
 		final String orinalUrl = cursor.getString(cursor.getColumnIndex(Contract.MovieColumns.POSTERS_ORIGINAL));
 		if (!TextUtils.isEmpty(posterUrl)) {
